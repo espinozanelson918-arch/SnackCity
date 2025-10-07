@@ -1,0 +1,17 @@
+# Node modules
+node_modules/
+
+# Firebase logs
+firebase-debug.log
+
+# Compilados o temporales
+dist/
+build/
+*.log
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Entornos virtuales (si usas Python)
+venv/
