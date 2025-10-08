@@ -1,7 +1,10 @@
 # Node modules
 node_modules/
 
-# Firebase logs
+# Firebase keys y configuraciones sensibles
+backend/firebase/clave.json
+backend/firebase/serviceAccountKey.json
+.firebase/
 firebase-debug.log
 
 # Compilados o temporales
@@ -13,5 +16,11 @@ build/
 .DS_Store
 Thumbs.db
 
-# Entornos virtuales (si usas Python)
+# Entornos virtuales (Python)
 venv/
+__pycache__/
+
+# Archivos de entorno
+.env
+*.env
+
