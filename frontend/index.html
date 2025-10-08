@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login y Nuevo Usuario</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; background:#f3f4f6; margin:0; }
+    .wrap { max-width:480px; margin:50px auto; background:white; padding:24px; border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,.06); }
+    input, select, button { width:100%; padding:10px; margin:8px 0; border-radius:6px; border:1px solid #ddd; }
+    button { background:#2563eb; color:white; border:none; cursor:pointer; }
+    .msg { text-align:center; margin-top:8px; font-weight:bold; }
+    .error { color:#b91c1c; }
+    .success { color:green; }
+    #nuevoForm { display:none; border-top:1px solid #ccc; margin-top:16px; padding-top:16px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h2>Inicio de Sesión</h2>
+    <form id="loginForm">
+      <input id="loginCorreo" type="email" placeholder="Correo electrónico" required>
+      <input id="loginPassword" type="password" placeholder="Contraseña" required minlength="6">
+      <button type="submit">Ingresar</button>
+    </form>
+    <p id="loginMsg" class="msg"></p>
+
+    <button id="mostrarNuevo">➕ Agregar nuevo usuario</button>
+
+    <form id="nuevoForm">
+      <h3>Agregar nuevo usuario</h3>
+      <input id="nombre" type="text" placeholder="Nombre completo" required>
+      <input id="correo" type="email" placeholder="Correo electrónico" required>
+      <input id="password" type="password" placeholder="Contraseña (mín. 6)" required minlength="6">
+      <input id="sucursal" type="text" placeholder="Sucursal" required>
+      <select id="rol" required>
+        <option value="">Seleccionar rol</option>
+        <option value="admin">Administrador</option>
+        <option value="gerente">Gerente</option>
+      </select>
+      <button type="submit">Guardar</button>
+      <p id="nuevoMsg" class="msg"></p>
+    </form>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAUcDxszHV4bVvnYBQT7OmOb3I0cnUwdpA",
+      authDomain: "snackcity-2f551.firebaseapp.com",
+      projectId: "snackcity-2f551",
+      storageBucket: "snackcity-2f551.firebasestorage.app",
+      messagingSenderId: "625609791401",
+      appId: "1:625609791401:web:bd2d77452aee0f09ca56b8",
+      measurementId: "G-G31FZ0EPKB"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const loginForm = document.getElementById("loginForm");
+    const loginMsg = document.getElementById("loginMsg");
+    const mostrarBtn = document.getElementById("mostrarNuevo");
+    const nuevoForm = document.getElementById("nuevoForm");
+    const nuevoMsg = document.getElementById("nuevoMsg");
+
+    // Mostrar/Ocultar formulario nuevo usuario
+    mostrarBtn.addEventListener("click", () => {
+      nuevoForm.style.display = nuevoForm.style.display === "block" ? "none" : "block";
+    });
+
+    // LOGIN
+    loginForm.addEventListener("submit", async e => {
+      e.preventDefault();
+      loginMsg.textContent = "";
+      loginMsg.className = "msg";
+
+      const correo = document.getElementById("loginCorreo").value.trim();
+      const password = document.getElementById("loginPassword").value.trim();
+
+      try {
+        const cred = await signInWithEmailAndPassword(auth, correo, password);
+        const uid = cred.user.uid;
+
+        const docRef = doc(db, "usuarios", uid);
+        const docSnap = await getDoc(docRef);
+
+        if (!docSnap.exists()) {
+          loginMsg.textContent = "⚠️ Usuario no encontrado en Firestore.";
+          loginMsg.classList.add("error");
+          return;
+        }
+
+        const rol = docSnap.data().rol;
+        if (rol === "admin") window.location.href = "menu_admin.html";
+        else if (rol === "gerente") window.location.href = "menu_gerente.html";
+        else {
+          loginMsg.textContent = "⚠️ Rol no reconocido.";
+          loginMsg.classList.add("error");
+        }
+      } catch(err) {
+        console.error(err);
+        loginMsg.textContent = "❌ Credenciales incorrectas o usuario no registrado.";
+        loginMsg.classList.add("error");
+      }
+    });
+
+    // NUEVO USUARIO
+    nuevoForm.addEventListener("submit", async e => {
+      e.preventDefault();
+      nuevoMsg.textContent = "";
+      nuevoMsg.className = "msg";
+
+      const nombre = document.getElementById("nombre").value.trim();
+      const correo = document.getElementById("correo").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const sucursal = document.getElementById("sucursal").value.trim();
+      const rol = document.getElementById("rol").value;
+
+      if (!nombre || !correo || !password || !sucursal || !rol) {
+        nuevoMsg.textContent = "⚠️ Completa todos los campos.";
+        nuevoMsg.classList.add("error");
+        return;
+      }
+
+      try {
+        // Crear usuario en Firebase Auth
+        const cred = await createUserWithEmailAndPassword(auth, correo, password);
+        const uid = cred.user.uid;
+
+        // Guardar datos adicionales en Firestore
+        await setDoc(doc(db, "usuarios", uid), {
+          nombre,
+          correo,
+          sucursal,
+          rol,
+          creadoEn: new Date().toISOString()
+        });
+
+        nuevoMsg.textContent = "✅ Usuario agregado correctamente.";
+        nuevoMsg.classList.add("success");
+        nuevoForm.reset();
+      } catch(err) {
+        console.error(err);
+        nuevoMsg.textContent = "❌ Error: " + err.message;
+        nuevoMsg.classList.add("error");
+      }
+    });
+
+  </script>
+</body>
+</html>

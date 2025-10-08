@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nuevo Usuario</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; background:#f3f4f6; margin:0; }
+    .wrap { max-width:480px; margin:64px auto; background:white; padding:24px; border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,.06); }
+    input, select, button { width:100%; padding:10px; margin:8px 0; border-radius:6px; border:1px solid #ddd; }
+    button { background:#2563eb; color:white; border:none; cursor:pointer; }
+    .msg { text-align:center; margin-top:8px; font-weight:bold; }
+    .success { color:green; }
+    .error { color:#b91c1c; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h2>Agregar nuevo usuario</h2>
+    <form id="nuevoForm">
+      <label>Nombre completo</label>
+      <input id="nombre" type="text" placeholder="Ej: Juan Pérez" required />
+
+      <label>Correo electrónico</label>
+      <input id="correo" type="email" placeholder="correo@empresa.com" required />
+
+      <label>Sucursal</label>
+      <input id="sucursal" type="text" placeholder="Ej: San Marcos" required />
+
+      <label>Rol</label>
+      <select id="rol" required>
+        <option value="">Seleccionar rol</option>
+        <option value="admin">Administrador</option>
+        <option value="gerente">Gerente</option>
+      </select>
+
+      <button type="submit">Guardar</button>
+    </form>
+
+    <p id="msg" class="msg"></p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+    // Configuración Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAUcDxszHV4bVvnYBQT7OmOb3I0cnUwdpA",
+      authDomain: "snackcity-2f551.firebaseapp.com",
+      projectId: "snackcity-2f551",
+      storageBucket: "snackcity-2f551.firebasestorage.app",
+      messagingSenderId: "625609791401",
+      appId: "1:625609791401:web:bd2d77452aee0f09ca56b8",
+      measurementId: "G-G31FZ0EPKB"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const form = document.getElementById("nuevoForm");
+    const msg = document.getElementById("msg");
+
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      msg.textContent = "";
+      msg.className = "msg";
+
+      const nombre = document.getElementById("nombre").value.trim();
+      const correo = document.getElementById("correo").value.trim();
+      const sucursal = document.getElementById("sucursal").value.trim();
+      const rol = document.getElementById("rol").value;
+
+      if (!nombre || !correo || !sucursal || !rol) {
+        msg.textContent = "⚠️ Completa todos los campos.";
+        msg.classList.add("error");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "usuarios"), {
+          nombre,
+          correo,
+          sucursal,
+          rol,
+          creadoEn: new Date().toISOString()
+        });
+
+        msg.textContent = "✅ Usuario agregado correctamente.";
+        msg.classList.add("success");
+        form.reset();
+      } catch (err) {
+        console.error(err);
+        msg.textContent = "❌ Error al guardar. Revisa la consola.";
+        msg.classList.add("error");
+      }
+    });
+  </script>
+</body>
+</html>

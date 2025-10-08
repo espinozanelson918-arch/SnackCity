@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Menú Admin</title>
+<style>
+  body { font-family: Arial; background:#f3f4f6; margin:0; }
+  .wrap { max-width:600px; margin:50px auto; background:white; padding:24px; border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,.06); text-align:center; }
+  button { padding:10px 20px; margin-top:12px; cursor:pointer; border:none; background:#2563eb; color:white; border-radius:6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h2>Bienvenido, <span id="userName"></span> (Admin)</h2>
+  <p>Este es el menú de administrador</p>
+  <button id="logout">Cerrar sesión</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+    // 🔧 Configuración Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAUcDxszHV4bVvnYBQT7OmOb3I0cnUwdpA",
+      authDomain: "snackcity-2f551.firebaseapp.com",
+      projectId: "snackcity-2f551",
+      storageBucket: "snackcity-2f551.firebasestorage.app",
+      messagingSenderId: "625609791401",
+      appId: "1:625609791401:web:bd2d77452aee0f09ca56b8",
+      measurementId: "G-G31FZ0EPKB"
+    };
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const logoutBtn = document.getElementById("logout");
+const userName = document.getElementById("userName");
+
+onAuthStateChanged(auth, async user => {
+  if (!user) return window.location.href = "index.html";
+
+  const docRef = doc(db, "usuarios", user.uid);
+  const docSnap = await getDoc(docRef);
+
+  if (!docSnap.exists() || docSnap.data().rol !== "admin") {
+    alert("No tienes permisos de administrador");
+    await signOut(auth);
+    return window.location.href = "index.html";
+  }
+
+  userName.textContent = docSnap.data().nombre;
+});
+
+logoutBtn.addEventListener("click", async () => {
+  await signOut(auth);
+  window.location.href = "index.html";
+});
+</script>
+</body>
+</html>
