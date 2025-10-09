@@ -1,22 +1,24 @@
+// Firebase App (the core Firebase SDK) is always required
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut,
+import { 
+  getAuth, 
+  onAuthStateChanged, 
+  signOut 
 } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  collection,
-  getDocs,
-  addDoc,
+import { 
+  getFirestore, 
+  collection, 
+  addDoc, 
+  getDocs, 
   serverTimestamp,
   query,
   where,
+  orderBy,
+  limit,
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-// 🔧 Configuración Firebase
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAUcDxszHV4bVvnYBQT7OmOb3I0cnUwdpA",
   authDomain: "snackcity-2f551.firebaseapp.com",
@@ -24,28 +26,281 @@ const firebaseConfig = {
   storageBucket: "snackcity-2f551.firebasestorage.app",
   messagingSenderId: "625609791401",
   appId: "1:625609791401:web:bd2d77452aee0f09ca56b8",
-  measurementId: "G-G31FZ0EPKB",
+  measurementId: "G-G31FZ0EPKB"
 };
+
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const logoutBtn = document.getElementById("logout");
-const userName = document.getElementById("userName");
+// DOM Elements
+const sidebar = document.querySelector('.sidebar');
+const toggleSidebar = document.querySelector('.toggle-sidebar');
+const productTable = document.querySelector('#productTable tbody');
+const addProductBtn = document.getElementById('addProductBtn');
+const confirmAddProduct = document.getElementById('confirmAddProduct');
+const productSelect = document.getElementById('productSelect');
+const productQuantity = document.getElementById('productQuantity');
+const productPrice = document.getElementById('productPrice');
+const orderForm = document.getElementById('orderForm');
+const logoutBtn = document.querySelector('.logout-btn');
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user) return (window.location.href = "index.html");
+// State
+let products = [];
+let currentOrder = {
+  items: [],
+  subtotal: 0,
+  tax: 0,
+  total: 0
+};
 
-  const docRef = doc(db, "usuarios", user.uid);
-  const docSnap = await getDoc(docRef);
+// Toggle Sidebar
+toggleSidebar?.addEventListener('click', () => {
+  sidebar.classList.toggle('show');
+  document.body.classList.toggle('sidebar-visible');
+});
 
-  if (!docSnap.exists() || docSnap.data().rol !== "admin") {
-    alert("No tienes permisos de administrador");
+// Logout
+logoutBtn?.addEventListener('click', async (e) => {
+  e.preventDefault();
+  try {
     await signOut(auth);
-    return (window.location.href = "index.html");
+    window.location.href = '../index.html';
+  } catch (error) {
+    console.error('Error signing out:', error);
   }
+});
 
-  userName.textContent = docSnap.data().nombre;
+// Load Products
+async function loadProducts() {
+  try {
+    const querySnapshot = await getDocs(collection(db, 'products'));
+    products = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    
+    // Populate product select
+    if (productSelect) {
+      productSelect.innerHTML = `
+        <option value="" disabled selected>Seleccione un producto</option>
+        ${products.map(product => `
+          <option value="${product.id}" data-price="${product.price}">
+            ${product.name} - ${product.code}
+          </option>
+        `).join('')}
+      `;
+    }
+  } catch (error) {
+    console.error('Error loading products:', error);
+  }
+}
+
+// Add Product to Order
+function addProductToOrder() {
+  const productId = productSelect.value;
+  const product = products.find(p => p.id === productId);
+  const quantity = parseInt(productQuantity.value) || 1;
+  const price = parseFloat(productPrice.value) || parseFloat(productSelect.options[productSelect.selectedIndex].dataset.price);
+  
+  if (!product || !quantity || !price) return;
+  
+  const item = {
+    id: productId,
+    name: product.name,
+    code: product.code,
+    quantity,
+    price,
+    total: quantity * price
+  };
+  
+  // Check if product already exists in order
+  const existingItemIndex = currentOrder.items.findIndex(item => item.id === productId);
+  
+  if (existingItemIndex > -1) {
+    // Update existing item
+    currentOrder.items[existingItemIndex].quantity += quantity;
+    currentOrder.items[existingItemIndex].total = currentOrder.items[existingItemIndex].quantity * price;
+  } else {
+    // Add new item
+    currentOrder.items.push(item);
+  }
+  
+  updateOrderSummary();
+  renderOrderItems();
+  
+  // Reset form
+  productSelect.value = '';
+  productQuantity.value = '1';
+  productPrice.value = '';
+}
+
+// Update Order Summary
+function updateOrderSummary() {
+  currentOrder.subtotal = currentOrder.items.reduce((sum, item) => sum + item.total, 0);
+  currentOrder.tax = currentOrder.subtotal * 0.16; // 16% IVA
+  currentOrder.total = currentOrder.subtotal + currentOrder.tax;
+  
+  // Update UI
+  const subtotalElement = document.getElementById('subtotal');
+  const taxElement = document.getElementById('tax');
+  const totalElement = document.getElementById('total');
+  
+  if (subtotalElement) subtotalElement.textContent = `$${currentOrder.subtotal.toFixed(2)}`;
+  if (taxElement) taxElement.textContent = `$${currentOrder.tax.toFixed(2)}`;
+  if (totalElement) totalElement.textContent = `$${currentOrder.total.toFixed(2)}`;
+}
+
+// Render Order Items
+function renderOrderItems() {
+  if (!productTable) return;
+  
+  productTable.innerHTML = currentOrder.items.map(item => `
+    <tr>
+      <td>${item.name}</td>
+      <td>${item.code}</td>
+      <td class="text-end">${item.quantity}</td>
+      <td class="text-end">$${item.price.toFixed(2)}</td>
+      <td class="text-end">$${item.total.toFixed(2)}</td>
+      <td class="text-center">
+        <button class="btn btn-sm btn-danger remove-item" data-id="${item.id}">
+          <i class="fas fa-trash"></i>
+        </button>
+      </td>
+    </tr>
+  `).join('');
+  
+  // Add event listeners to remove buttons
+  document.querySelectorAll('.remove-item').forEach(button => {
+    button.addEventListener('click', (e) => {
+      const productId = e.currentTarget.dataset.id;
+      currentOrder.items = currentOrder.items.filter(item => item.id !== productId);
+      updateOrderSummary();
+      renderOrderItems();
+    });
+  });
+}
+
+// Handle Form Submission
+async function handleSubmit(e) {
+  e.preventDefault();
+  
+  if (currentOrder.items.length === 0) {
+    alert('Por favor, agregue al menos un producto al pedido.');
+    return;
+  }
+  
+  const orderData = {
+    branch: document.getElementById('branch').value,
+    deliveryDate: document.getElementById('deliveryDate').value,
+    notes: document.getElementById('notes').value,
+    items: currentOrder.items,
+    subtotal: currentOrder.subtotal,
+    tax: currentOrder.tax,
+    total: currentOrder.total,
+    status: 'pending',
+    createdAt: serverTimestamp(),
+    createdBy: auth.currentUser?.uid || 'anonymous',
+    createdByName: auth.currentUser?.displayName || 'Usuario'
+  };
+  
+  try {
+    // Add order to Firestore
+    const docRef = await addDoc(collection(db, 'orders'), orderData);
+    console.log('Order created with ID: ', docRef.id);
+    
+    // Reset form and order
+    orderForm.reset();
+    currentOrder = { items: [], subtotal: 0, tax: 0, total: 0 };
+    updateOrderSummary();
+    renderOrderItems();
+    
+    // Show success message
+    alert('¡Pedido creado exitosamente!');
+    
+  } catch (error) {
+    console.error('Error creating order: ', error);
+    alert('Error al crear el pedido. Por favor, intente nuevamente.');
+  }
+}
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize
+  loadProducts();
+  
+  // Add product to order
+  if (confirmAddProduct) {
+    confirmAddProduct.addEventListener('click', addProductToOrder);
+  }
+  
+  // Auto-fill price when product is selected
+  if (productSelect) {
+    productSelect.addEventListener('change', (e) => {
+      const selectedOption = e.target.options[e.target.selectedIndex];
+      if (selectedOption && selectedOption.dataset.price) {
+        productPrice.value = parseFloat(selectedOption.dataset.price).toFixed(2);
+      }
+    });
+  }
+  
+  // Form submission
+  if (orderForm) {
+    orderForm.addEventListener('submit', handleSubmit);
+  }
+  
+  // Set minimum date to today
+  const today = new Date().toISOString().split('T')[0];
+  const deliveryDate = document.getElementById('deliveryDate');
+  if (deliveryDate) {
+    deliveryDate.min = today;
+  }
+});
+// User authentication state handling
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "../index.html";
+    return;
+  }
+  
+  try {
+    // Update UI with user info
+    const userNameElement = document.getElementById("userName");
+    const userRoleElement = document.getElementById("userRole");
+    
+    if (userNameElement || userRoleElement) {
+      const userDoc = await getDoc(doc(db, "usuarios", user.uid));
+      
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        
+        // Check admin role
+        if (userData.rol !== "admin") {
+          alert("No tienes permisos de administrador");
+          await signOut(auth);
+          window.location.href = "../index.html";
+          return;
+        }
+        
+        // Update UI
+        if (userNameElement) {
+          userNameElement.textContent = userData.nombre || user.email || 'Usuario';
+        }
+        if (userRoleElement) {
+          userRoleElement.textContent = 'Administrador';
+        }
+      } else {
+        // User document doesn't exist
+        await signOut(auth);
+        window.location.href = "../index.html";
+      }
+    }
+  } catch (error) {
+    console.error("Error checking user role:", error);
+    await signOut(auth);
+    window.location.href = "../index.html";
+  }
 });
 
 logoutBtn.addEventListener("click", async () => {

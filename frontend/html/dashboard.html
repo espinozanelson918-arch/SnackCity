@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es" class="no-js">
+
+<head>
+  <!-- Meta Tags -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="Sistema de gestión administrativa para agencias distribuidoras de Coca-Cola">
+  <meta name="keywords" content="Coca-Cola, distribución, gestión, inventario, ventas, facturación, pedidos">
+  <meta name="author" content="Bryan Saenz">
+  <meta name="theme-color" content="#F40009">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="../img/favicon.ico">
+  <link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+
+  <title>Dashboard - Gestión de Pedidos | Coca-Cola</title>
+</head>
+
+<body class="dashboard-page">
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="brand">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/d/dd/Coca-Cola_logo_white.png" alt="Coca-Cola"
+          class="brand-logo">
+        <h2>Panel de Control</h2>
+      </div>
+      <div class="user-info">
+        <div class="user-avatar">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <div class="user-details">
+          <h3 id="userName">Bienvenido</h3>
+          <p class="user-role" id="userRole">Administrador</p>
+        </div>
+      </div>
+    </div>
+
+    <ul class="nav-links">
+      <li class="nav-item active">
+        <a href="#" class="nav-link">
+          <i class="fas fa-tachometer-alt"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="fas fa-shopping-cart"></i>
+          <span>Pedidos</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="fas fa-warehouse"></i>
+          <span>Inventario</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="fas fa-store"></i>
+          <span>Sucursales</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="fas fa-chart-line"></i>
+          <span>Reportes</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="fas fa-cog"></i>
+          <span>Configuración</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <a href="#" class="logout-btn">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Cerrar Sesión</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Top Navigation -->
+    <header class="top-nav">
+      <div class="nav-left">
+        <button class="toggle-sidebar" aria-label="Toggle navigation">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1>Nuevo Pedido</h1>
+      </div>
+      <div class="nav-right">
+        <div class="search-box">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" placeholder="Buscar..." class="search-input" aria-label="Buscar en el sistema">
+        </div>
+        <div class="user-actions">
+          <button class="notification-btn" aria-label="Notificaciones">
+            <i class="far fa-bell"></i>
+            <span class="notification-badge">3</span>
+          </button>
+          <div class="user-dropdown">
+            <button class="user-menu-btn" aria-expanded="false" aria-haspopup="true">
+              <img src="https://ui-avatars.com/api/?name=Usuario&background=F40009&color=fff" alt="Usuario"
+                class="user-avatar-sm">
+              <span class="user-name">Usuario</span>
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="dropdown-menu">
+              <a href="#" class="dropdown-item"><i class="fas fa-user"></i> Perfil</a>
+              <a href="#" class="dropdown-item"><i class="fas fa-cog"></i> Configuración</a>
+              <div class="dropdown-divider"></div>
+              <a href="../index.html" class="dropdown-item text-danger"><i class="fas fa-sign-out-alt"></i> Cerrar
+                Sesión</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <div class="page-content">
+      <div class="container-fluid">
+        <!-- Order Form -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Información del Pedido</h3>
+          </div>
+          <div class="card-body">
+            <form id="orderForm" class="order-form">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="branch" class="form-label">
+                      <i class="fas fa-store"></i> Sucursal
+                    </label>
+                    <div class="input-group">
+                      <select id="branch" name="branch" class="form-control" required>
+                        <option value="">Seleccione una sucursal</option>
+                        <option value="sucursal1">Sucursal Centro</option>
+                        <option value="sucursal2">Sucursal Norte</option>
+                        <option value="sucursal3">Sucursal Sur</option>
+                        <option value="sucursal4">Sucursal Este</option>
+                        <option value="sucursal5">Sucursal Oeste</option>
+                      </select>
+                      <span class="input-icon">
+                        <i class="fas fa-chevron-down"></i>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="deliveryDate" class="form-label">
+                      <i class="far fa-calendar-alt"></i> Fecha Límite de Entrega
+                    </label>
+                    <div class="input-group">
+                      <input type="date" id="deliveryDate" name="deliveryDate" class="form-control" required
+                        min="2025-10-10" value="2025-10-17">
+                      <span class="input-icon">
+                        <i class="far fa-calendar-alt"></i>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="notes" class="form-label">
+                  <i class="far fa-sticky-note"></i> Notas (Opcional)
+                </label>
+                <textarea id="notes" name="notes" class="form-control" rows="3"
+                  placeholder="Agregar notas adicionales para el pedido"></textarea>
+              </div>
+
+              <div class="products-section">
+                <div class="section-header">
+                  <h4>Productos</h4>
+                  <button type="button" class="btn btn-sm btn-outline-primary" id="addProductBtn">
+                    <i class="fas fa-plus"></i> Agregar Producto
+                  </button>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="table products-table">
+                    <thead>
+                      <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unitario</th>
+                        <th>Subtotal</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                      <!-- Product rows will be added here dynamically -->
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                        <td><span id="orderTotal">$0.00</span></td>
+                        <td></td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" class="btn btn-outline-secondary">
+                  <i class="fas fa-times"></i> Cancelar
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-save"></i> Guardar Pedido
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Add Product Modal -->
+  <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addProductModalLabel">Agregar Producto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addProductForm">
+            <div class="form-group">
+              <label for="productSelect" class="form-label">Producto</label>
+              <select id="productSelect" class="form-select" required>
+                <option value="">Seleccione un producto</option>
+                <option value="coca-cola-600ml">Coca-Cola 600ml</option>
+                <option value="sprite-600ml">Sprite 600ml</option>
+                <option value="fanta-600ml">Fanta Naranja 600ml</option>
+                <option value="coca-cola-1l">Coca-Cola 1L</option>
+                <option value="coca-cola-2l">Coca-Cola 2L</option>
+                <option value="coca-cola-3l">Coca-Cola 3L</option>
+                <option value="sprite-2l">Sprite 2L</option>
+                <option value="fanta-2l">Fanta Naranja 2L</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="productQuantity" class="form-label">Cantidad</label>
+              <input type="number" id="productQuantity" class="form-control" min="1" value="1" required>
+            </div>
+            <div class="form-group">
+              <label for="productPrice" class="form-label">Precio Unitario</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" id="productPrice" class="form-control" step="0.01" min="0" required>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="confirmAddProduct">Agregar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Custom JS -->
+  <script src="../js/navbar.js" defer></script>
+  <script type="module" src="../js/dashboard.js" defer></script>
+</body>
+
+</html>
