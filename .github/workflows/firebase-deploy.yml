@@ -1,25 +1,27 @@
-name: Deploy to Firebase Hosting
+name: Deploy to Vercel
 
 on:
   push:
     branches:
-      - main  # Se ejecuta solo cuando haces push a main
+      - main
 
 jobs:
-  deploy:
+  build_and_deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Build backend
+        run: |
+          cd backend
+          npm ci
+          npm run build
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v20
         with:
-          node-version: 20
-
-      - name: Install Firebase CLI
-        run: npm install -g firebase-tools
-
-      - name: Deploy to Firebase
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-        run: firebase deploy --only hosting --project snackcity-2f551
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: .
+          prod: true
