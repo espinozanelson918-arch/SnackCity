@@ -1,12 +1,13 @@
 {
   "version": 2,
   "builds": [
-    { "src": "backend/server.js", "use": "@vercel/node" },
-    { "src": "frontend/dist/**/*", "use": "@vercel/static" }
+    { "src": "backend/dist/index.js", "use": "@vercel/node" },
+    { "src": "frontend/**/*", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/backend/server.js" },
-    { "src": "/(.*)", "dest": "/frontend/dist/$1" }
+    { "src": "/api/(.*)", "dest": "/backend/dist/index.js" },
+    { "src": "/(.*)", "dest": "/frontend/$1" }
   ],
-  "buildCommand": "cd backend && npm install && cd ../frontend && npm install && npm run build"
+  "buildCommand": "cd backend && npm install && npm run build"
 }
+

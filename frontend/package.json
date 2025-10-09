@@ -1,0 +1,11 @@
+{
+  "name": "snackcity-frontend",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "mkdir -p dist && cp *.html dist/"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "description": "Frontend de SnackCity",
+  "license": "ISC"
+}
