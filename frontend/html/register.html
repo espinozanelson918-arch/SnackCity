@@ -1,0 +1,50 @@
+<!doctype html>
+<!-- Lang -->
+<html lang="es">
+
+<head>
+  <!-- Metadatos -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Pagina de administración de envíos de bebidas">
+  <meta name="keywords" content="Administración, envíos, bebidas">
+  <meta name="author" content="Bryan Saenz">
+  <meta name="robots" content="index, follow">
+  <!-- Tipografías -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap" rel="stylesheet">
+  <!-- Scripts -->
+  <script type="module" src="../js/script.js" defer></script>
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/styles.css">
+  <!-- Title -->
+  <title>Agencia Coca-Cola</title>
+</head>
+
+<body>
+  <!-- Container -->
+  <div class="container">
+    <h2>Get Started</h2>
+    <p>Create an account to start using our app</p>
+    <!-- Form Register -->
+    <form id="registerForm">
+      <input id="registerNombre" type="text" placeholder="Name" required>
+      <input id="registerCorreo" type="email" placeholder="Email" required>
+      <input id="registerPassword" type="password" maxlength="12" minlength="6" placeholder="Password (min. 6)"
+        required>
+      <input id="registerSucursal" type="text" placeholder="Branch" required>
+      <select id="registerRol" required>
+        <option value="">Select role</option>
+        <option value="admin">Admin</option>
+        <option value="gerente">Manager</option>
+      </select>
+      <div id="registerMsg" class="msg"></div>
+      <button type="submit">Register</button>
+    </form>
+  </div>
+  <!-- Register Link -->
+  <a href="../index.html" class="register__link"> Already have an account? Login</a>
+</body>
+
+</html>
