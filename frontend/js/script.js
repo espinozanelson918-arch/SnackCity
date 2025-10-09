@@ -47,6 +47,9 @@ if (loginForm) {
     const correo = document.getElementById("loginCorreo").value.trim();
     const password = document.getElementById("loginPassword").value.trim();
 
+    console.log(correo);
+    console.log(password);
+
     // Validar campos
     if (!correo || !password) {
       showMessage(loginMsg, "⚠️ Por favor completa todos los campos.", "error");
@@ -73,8 +76,12 @@ if (loginForm) {
       // Validar rol
       const rol = docSnap.data().rol;
 
-      if (rol === "admin") window.location.href = "../html/menu_admin.html";
-      else if (rol === "gerente") window.location.href = "../html/menu_gerente.html";
+      console.log(rol);
+      console.log(window.location.href);
+
+      if (rol === "admin") window.location.href = "/SnackCity/frontend/html/menu_admin.html";
+      else if (rol === "gerente")
+        window.location.href = "/SnackCity/frontend/html/menu_gerente.html";
       else {
         showMessage(loginMsg, "⚠️ Rol no reconocido.", "error");
       }
