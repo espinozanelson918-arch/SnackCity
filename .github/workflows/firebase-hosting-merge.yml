@@ -13,12 +13,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Instalar dependencias dentro de la carpeta backend
+      # Instalar dependencias dentro de backend
       - name: Install dependencies
-      - working-directory: ./backend
+        working-directory: ./backend
         run: npm ci
 
-      # Compilar proyecto dentro de backend
+      # Compilar el proyecto dentro de backend
       - name: Build project
         working-directory: ./backend
         run: npm run build
