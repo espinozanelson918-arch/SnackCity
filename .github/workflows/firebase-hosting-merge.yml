@@ -6,12 +6,24 @@ on:
   push:
     branches:
       - main
+
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm ci && npm run build
+
+      # Instalar dependencias dentro de backend
+      - name: Install dependencies
+        working-directory: ./backend
+        run: npm ci
+
+      # Compilar el proyecto dentro de backend
+      - name: Build project
+        working-directory: ./backend
+        run: npm run build
+
+      # Desplegar a Firebase Hosting
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
