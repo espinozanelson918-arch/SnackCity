@@ -21,7 +21,7 @@
   <!-- Estilos -->
   <link rel="stylesheet" href="../css/dashboard.css">
   <!-- Title -->
-  <title>Dashboard - Agencia Coca-Cola</title>
+  <title>S sucursal Diriamba - Agencia Coca-Cola</title>
 </head>
 
 <body>
@@ -39,7 +39,8 @@
 
     <!-- Menú de navegación -->
     <div class="nav-buttons">
-      <a href="menu_admin.html" class="nav-btn active" id="dashboard-link">
+      <!-- Enlace al Dashboard -->
+      <a href="menu_admin.html" class="nav-btn" id="dashboard-link">
         <i class="fas fa-chart-line"></i>
         <span>Dashboard</span>
       </a>
@@ -47,76 +48,50 @@
       <!-- Enlace a Jinotepe -->
       <a href="jinotepe.html" class="nav-btn" id="jinotepe-link">
         <i class="fas fa-store"></i>
-        <span>Sucursal Jinotepe</span>
+        <span>S sucursal Jinotepe</span>
       </a>
 
       <!-- Enlace a Diriamba -->
-      <a href="diriamba.html" class="nav-btn" id="diriamba-link">
+      <a href="diriamba.html" class="nav-btn active" id="diriamba-link">
         <i class="fas fa-store"></i>
-        <span>Sucursal Diriamba</span>
+        <span>S sucursal Diriamba</span>
       </a>
 
       <!-- Enlace a Masaya -->
       <a href="masaya.html" class="nav-btn" id="masaya-link">
         <i class="fas fa-store"></i>
-        <span>Sucursal Masaya</span>
+        <span>S sucursal Masaya</span>
       </a>
 
       <!-- Enlace a Managua -->
       <a href="managua.html" class="nav-btn" id="managua-link">
         <i class="fas fa-store"></i>
-        <span>Sucursal Managua</span>
+        <span>S sucursal Managua</span>
       </a>
     </div>
   </nav>
-  <!-- Contenido -->
-  <div class="content">
-    <h2>Task Control Panel</h2>
-    <!-- Botón para abrir el modal de nuevo pedido -->
-    <button id="openOrderModal" class="btn-primary"">
-      <i class=" fas fa-plus"></i> New Order
-    </button>
 
-    <!-- Modal para agregar nuevo pedido -->
-    <div id="orderModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Nuevo Pedido</h2>
-        <form id="orderForm">
-          <div class="form-group">
-            <label for="branch">Sucursal:</label>
-            <select id="branch" name="branch" class="form-control" required>
-              <option value="">Seleccione una sucursal</option>
-              <option value="jinotepe">Jinotepe</option>
-              <option value="diriamba">Diriamba</option>
-              <option value="masaya">Masaya</option>
-              <option value="managua">Managua</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Productos:</label>
-            <div id="productsList" class="products-list">
-              <!-- Los productos se cargarán dinámicamente aquí -->
-            </div>
-            <button type="button" id="addProduct" class="btn-secondary" style="margin-top: 10px;">
-              <i class="fas fa-plus"></i> Agregar Producto
-            </button>
-          </div>
-
-          <div class="form-group">
-            <label for="deliveryDate">Fecha Límite de Entrega:</label>
-            <input type="datetime-local" id="deliveryDate" name="deliveryDate" class="form-control" required>
-          </div>
-
-          <div class="form-actions">
-            <button type="button" id="cancelOrder" class="btn-secondary">Cancelar</button>
-            <button type="submit" class="btn-primary">Guardar Orden</button>
-          </div>
-        </form>
+  <!-- Contenido principal -->
+  <main class="content">
+    <h1>S sucursal Diriamba</h1>
+    <div class="dashboard-grid">
+      <div class="card">
+        <h3>Ventas del Día</h3>
+        <p class="stat">$4,120</p>
+        <span class="trend up">+12%</span>
+      </div>
+      <div class="card">
+        <h3>Inventario</h3>
+        <p class="stat">2,015 uds.</p>
+        <span class="trend down">-5%</span>
+      </div>
+      <div class="card">
+        <h3>Órdenes Hoy</h3>
+        <p class="stat">24</p>
+        <span class="trend up">+8%</span>
       </div>
     </div>
-  </div>
+  </main>
 </body>
 
 </html>

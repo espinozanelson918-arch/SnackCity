@@ -127,7 +127,7 @@ if (forgotPasswordForm) {
 
       // Redirigir después de 3 segundos
       setTimeout(() => {
-        window.location.href = "../index.html";
+        window.location.href = "f../index.html";
       }, 3000);
     } catch (err) {
       console.error("Error al enviar correo de recuperación:", err);
