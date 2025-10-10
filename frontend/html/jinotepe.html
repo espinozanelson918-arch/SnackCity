@@ -1,97 +1,306 @@
-<!doctype html>
-<!-- Lenguaje -->
-<html lang="es">
+<!DOCTYPE html>
+<html lang="es" class="no-js">
 
 <head>
-  <!-- Meta -->
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <!-- Meta Tags -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <meta name="description" content="Sistema de gestión administrativa para agencias distribuidoras de Coca-Cola">
-  <meta name="keywords" content="Coca-Cola, distribución, gestión, inventario, ventas, facturación">
+  <meta name="keywords" content="Coca-Cola, distribución, gestión, inventario, ventas, facturación, pedidos">
   <meta name="author" content="Bryan Saenz">
-  <meta name="robots" content="index, follow">
-  <!-- Tipografías -->
+  <meta name="theme-color" content="#F40009">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="../img/favicon.ico">
+  
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <!-- Scripts -->
   <script type="module" src="../js/dashboard.js" defer></script>
   <script src="../js/navbar.js" defer></script>
+
   <!-- Estilos -->
-  <link rel="stylesheet" href="../css/dashboard.css">
-  <!-- Title -->
-  <title>S sucursal Jinotepe - Agencia Coca-Cola</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/sucursales.css">
+
+  <title>Sucursal Jinotepe | Panel de Control - Coca-Cola</title>
 </head>
 
-<body>
-  <!-- Barra de navegación lateral -->
-  <nav class="navbar">
-    <!-- Encabezado -->
-    <div class="nav-header">
-      <h2>Hola, <span id="userName">Agente</span></h2>
-      <p>Bienvenido al panel de control</p>
-      <div class="search">
-        <i class="fas fa-search search-icon"></i>
-        <input type="text" id="search" placeholder="Buscar..." aria-label="Buscar en el sistema">
+<body class="dashboard-page">
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="brand">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/d/dd/Coca-Cola_logo_white.png" alt="Coca-Cola" class="brand-logo">
+        <h2>Panel de Control</h2>
+      </div>
+      <div class="user-info">
+        <div class="user-avatar">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <div class="user-details">
+          <h3 id="userName">Bienvenido</h3>
+          <p class="user-role" id="userRole">Administrador</p>
+        </div>
       </div>
     </div>
 
-    <!-- Menú de navegación -->
-    <div class="nav-buttons">
-      <!-- Enlace al Dashboard -->
-      <a href="menu_admin.html" class="nav-btn" id="dashboard-link">
-        <i class="fas fa-chart-line"></i>
-        <span>Dashboard</span>
-      </a>
-
-      <!-- Enlace a Jinotepe -->
-      <a href="jinotepe.html" class="nav-btn active" id="jinotepe-link">
-        <i class="fas fa-store"></i>
-        <span>S sucursal Jinotepe</span>
-      </a>
-
-      <!-- Enlace a Diriamba -->
-      <a href="diriamba.html" class="nav-btn" id="diriamba-link">
-        <i class="fas fa-store"></i>
-        <span>S sucursal Diriamba</span>
-      </a>
-
-      <!-- Enlace a Masaya -->
-      <a href="masaya.html" class="nav-btn" id="masaya-link">
-        <i class="fas fa-store"></i>
-        <span>S sucursal Masaya</span>
-      </a>
-
-      <!-- Enlace a Managua -->
-      <a href="managua.html" class="nav-btn" id="managua-link">
-        <i class="fas fa-store"></i>
-        <span>S sucursal Managua</span>
-      </a>
-    </div>
+    <ul class="nav-links">
+      <li class="nav-item">
+        <a href="dashboard.html" class="nav-link">
+          <i class="fas fa-chart-line"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="managua.html" class="nav-link">
+          <i class="fas fa-warehouse"></i>
+          <span>Managua</span>
+        </a>
+      </li>
+      <li class="nav-item active">
+        <a href="jinotepe.html" class="nav-link">
+          <i class="fas fa-warehouse"></i>
+          <span>Jinotepe</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="diriamba.html" class="nav-link">
+          <i class="fas fa-warehouse"></i>
+          <span>Diriamba</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="masaya.html" class="nav-link">
+          <i class="fas fa-warehouse"></i>
+          <span>Masaya</span>
+        </a>
+      </li>
+    </ul>
   </nav>
 
-  <!-- Contenido principal -->
-  <main class="content">
-    <h1>S sucursal Jinotepe</h1>
-    <div class="dashboard-grid">
-      <div class="card">
-        <h3>Ventas del Día</h3>
-        <p class="stat">$3,250</p>
-        <span class="trend up">+8%</span>
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Top Navigation -->
+    <header class="top-nav">
+      <div class="nav-left">
+        <button class="toggle-sidebar" id="toggleSidebarBtn" aria-label="Toggle navigation">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1>Sucursal Jinotepe</h1>
       </div>
-      <div class="card">
-        <h3>Inventario</h3>
-        <p class="stat">1,245 uds.</p>
-        <span class="trend down">-12%</span>
+      <div class="nav-right">
+        <div class="search-box">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" id="searchInput" placeholder="Buscar..." aria-label="Buscar en el sistema">
+        </div>
+        <div class="user-actions">
+          <button class="btn-icon" aria-label="Notificaciones">
+            <i class="fas fa-bell"></i>
+            <span class="badge">2</span>
+          </button>
+          <button class="btn-user" id="userMenuBtn">
+            <span class="user-name">Usuario</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+        </div>
       </div>
-      <div class="card">
-        <h3>Órdenes Hoy</h3>
-        <p class="stat">18</p>
-        <span class="trend up">+3%</span>
+    </header>
+
+    <!-- Page Content -->
+    <div class="page-content">
+      <div class="container-fluid">
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon bg-primary">
+              <i class="fas fa-shopping-cart"></i>
+            </div>
+            <div class="stat-info">
+              <h3>Ventas del Día</h3>
+              <div class="stat-value">$3,850</div>
+              <div class="stat-trend up">
+                <i class="fas fa-arrow-up"></i> 8% vs ayer
+              </div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon bg-success">
+              <i class="fas fa-boxes"></i>
+            </div>
+            <div class="stat-info">
+              <h3>Inventario</h3>
+              <div class="stat-value">1,780 uds.</div>
+              <div class="stat-trend down">
+                <i class="fas fa-arrow-down"></i> 3% restante
+              </div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon bg-warning">
+              <i class="fas fa-clipboard-list"></i>
+            </div>
+            <div class="stat-info">
+              <h3>Órdenes Hoy</h3>
+              <div class="stat-value">19</div>
+              <div class="stat-trend up">
+                <i class="fas fa-arrow-up"></i> 5% vs ayer
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="content-row">
+          <!-- Left Column -->
+          <div class="content-col">
+            <!-- Recent Orders -->
+            <div class="card">
+              <div class="card-header">
+                <h2>Órdenes Recientes</h2>
+                <button class="btn btn-sm btn-link">Ver todo</button>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th># Orden</th>
+                        <th>Cliente</th>
+                        <th>Productos</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>#ORD-101</td>
+                        <td>Supermercado Jinotepe</td>
+                        <td>4 productos</td>
+                        <td>$198.75</td>
+                        <td><span class="badge badge-success">Completado</span></td>
+                      </tr>
+                      <tr>
+                        <td>#ORD-102</td>
+                        <td>Pulpería El Progreso</td>
+                        <td>5 productos</td>
+                        <td>$215.30</td>
+                        <td><span class="badge badge-warning">En proceso</span></td>
+                      </tr>
+                      <tr>
+                        <td>#ORD-103</td>
+                        <td>Mini Market Jinotepe</td>
+                        <td>3 productos</td>
+                        <td>$127.50</td>
+                        <td><span class="badge badge-danger">Pendiente</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Right Column -->
+          <div class="content-col">
+            <!-- Quick Actions -->
+            <div class="card">
+              <div class="card-header">
+                <h2>Acciones Rápidas</h2>
+              </div>
+              <div class="card-body">
+                <div class="quick-actions">
+                  <button class="btn-action">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Nueva Orden</span>
+                  </button>
+                  <button class="btn-action">
+                    <i class="fas fa-box"></i>
+                    <span>Agregar Inventario</span>
+                  </button>
+                  <button class="btn-action">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>Generar Factura</span>
+                  </button>
+                  <button class="btn-action">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Ver Reportes</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Low Stock Alert -->
+            <div class="card alert-card">
+              <div class="card-header">
+                <h2>Inventario Bajo</h2>
+                <button class="btn btn-sm btn-link">Ver todo</button>
+              </div>
+              <div class="card-body">
+                <div class="alert-list">
+                  <div class="alert-item">
+                    <div class="alert-icon">
+                      <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="alert-content">
+                      <h4>Fanta Naranja 2.5L</h4>
+                      <p>Quedan 10 unidades</p>
+                    </div>
+                    <button class="btn btn-sm btn-outline">Reabastecer</button>
+                  </div>
+                  <div class="alert-item">
+                    <div class="alert-icon">
+                      <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="alert-content">
+                      <h4>Sprite 1.5L</h4>
+                      <p>Quedan 7 unidades</p>
+                    </div>
+                    <button class="btn btn-sm btn-outline">Reabastecer</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </main>
+
+  <!-- Scripts al final del body -->
+  <script>
+    // Toggle sidebar en móviles
+    document.getElementById('toggleSidebarBtn').addEventListener('click', function() {
+      document.querySelector('.sidebar').classList.toggle('show');
+    });
+    
+    // Cerrar sidebar al hacer clic fuera de él
+    document.addEventListener('click', function(event) {
+      const sidebar = document.querySelector('.sidebar');
+      const toggleBtn = document.getElementById('toggleSidebarBtn');
+      
+      if (window.innerWidth <= 992 && !sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+        sidebar.classList.remove('show');
+      }
+    });
+    
+    // Actualizar nombre de usuario
+    document.addEventListener('DOMContentLoaded', function() {
+      const userName = localStorage.getItem('userName') || 'Usuario';
+      document.querySelectorAll('#userName').forEach(el => {
+        el.textContent = userName;
+      });
+    });
+  </script>
 </body>
 
 </html>

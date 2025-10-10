@@ -21,6 +21,9 @@
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+  <!-- Scripts -->
+  <script type="module" src="../js/dashboard.js" defer></script>
+
   <!-- Custom CSS -->
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/dashboard.css">
@@ -56,28 +59,29 @@
         </a>
       </li>
       <li class="nav-item">
-        <a href="#" class="nav-link">
+        <a href="managua.html" class="nav-link">
+          <i class="fas fa-warehouse"></i>
+          <span>Managua</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="jinotepe.html" class="nav-link">
           <i class="fas fa-warehouse"></i>
           <span>Jinotepe</span>
         </a>
       </li>
       <li class="nav-item">
-        <a href="#" class="nav-link">
+        <a href="diriamba.html" class="nav-link">
           <i class="fas fa-warehouse"></i>
           <span>Diriamba</span>
         </a>
       </li>
       <li class="nav-item">
-        <a href="#" class="nav-link">
+        <a href="masaya.html" class="nav-link">
           <i class="fas fa-warehouse"></i>
           <span>Masaya</span>
         </a>
       </li>
-      <li class="nav-item">
-        <a href="#" class="nav-link">
-          <i class="fas fa-warehouse"></i>
-          <span>Masatepe</span>
-        </a>
       </li>
     </ul>
 
@@ -88,7 +92,7 @@
     <!-- Top Navigation -->
     <header class="top-nav">
       <div class="nav-left">
-        <button class="toggle-sidebar" aria-label="Toggle navigation">
+        <button class="toggle-sidebar" id="toggleSidebarBtn" aria-label="Toggle navigation">
           <i class="fas fa-bars"></i>
         </button>
         <h1>Nuevo Pedido</h1>
@@ -225,27 +229,19 @@
   </main>
 
   <!-- Add Product Modal -->
-  <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+  <div class="modal" id="addProductModal">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="addProductModalLabel">Agregar Producto</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          <button type="button" class="btn-close" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body">
           <form id="addProductForm">
             <div class="form-group">
               <label for="productSelect" class="form-label">Producto</label>
-              <select id="productSelect" class="form-select" required>
-                <option value="">Seleccione un producto</option>
-                <option value="coca-cola-600ml">Coca-Cola 600ml</option>
-                <option value="sprite-600ml">Sprite 600ml</option>
-                <option value="fanta-600ml">Fanta Naranja 600ml</option>
-                <option value="coca-cola-1l">Coca-Cola 1L</option>
-                <option value="coca-cola-2l">Coca-Cola 2L</option>
-                <option value="coca-cola-3l">Coca-Cola 3L</option>
-                <option value="sprite-2l">Sprite 2L</option>
-                <option value="fanta-2l">Fanta Naranja 2L</option>
+              <select id="productSelect" class="form-control" required>
+                <option value="" disabled selected>Seleccione un producto</option>
               </select>
             </div>
             <div class="form-group">
@@ -262,12 +258,18 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-outline-secondary" id="cancelBtn">Cancelar</button>
           <button type="button" class="btn btn-primary" id="confirmAddProduct">Agregar</button>
         </div>
       </div>
     </div>
   </div>
+  
+  <!-- Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="../js/dashboard.js" type="module"></script>
 </body>
 
 </html>
