@@ -82,6 +82,12 @@
           <span>Masaya</span>
         </a>
       </li>
+      <li class="nav-item">
+        <a href="#" id="inboxLink" class="nav-link">
+          <i class="fas fa-inbox"></i>
+          <span>Bandeja de Entrada</span>
+          <span class="badge" id="unreadCount">0</span>
+        </a>
       </li>
     </ul>
 
@@ -148,7 +154,7 @@
                         <option value="jinotepe">Sucursal Jinotepe</option>
                         <option value="diriamba">Sucursal Diriamba</option>
                         <option value="masaya">Sucursal Masaya</option>
-                        <option value="masatepe">Sucursal Masatepe</option>
+                        <option value="managua">Sucursal Managua</option>
                       </select>
                       <span class="input-icon">
                         <i class="fas fa-chevron-down"></i>
@@ -227,6 +233,47 @@
       </div>
     </div>
   </main>
+
+  <!-- Inbox Modal -->
+  <div class="modal fade" id="inboxModal" tabindex="-1" aria-labelledby="inboxModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="inboxModalLabel">
+            <i class="fas fa-inbox me-2"></i>Bandeja de Entrada
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="inbox-filters mb-3">
+            <div class="btn-group" role="group">
+              <button type="button" class="btn btn-outline-primary active" data-filter="all">Todos</button>
+              <button type="button" class="btn btn-outline-primary" data-filter="unread">No leídos</button>
+              <button type="button" class="btn btn-outline-primary" data-filter="read">Leídos</button>
+            </div>
+            <button id="markAllRead" class="btn btn-sm btn-outline-secondary ms-2">
+              <i class="fas fa-envelope-open-text me-1"></i>Marcar todos como leídos
+            </button>
+            <button id="deleteAllRead" class="btn btn-sm btn-outline-danger ms-2">
+              <i class="fas fa-trash-alt me-1"></i>Eliminar leídos
+            </button>
+          </div>
+          <div class="inbox-messages" id="inboxMessages">
+            <!-- Messages will be loaded here -->
+            <div class="text-center py-5">
+              <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+              <p class="text-muted">No hay mensajes en tu bandeja de entrada</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notifications Container -->
+  <div class="toast-container" id="toastContainer">
+    <!-- Toasts will be dynamically inserted here -->
+  </div>
 
   <!-- Add Product Modal -->
   <div class="modal" id="addProductModal">

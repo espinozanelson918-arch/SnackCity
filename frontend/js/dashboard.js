@@ -97,24 +97,178 @@ const DOM = {
 };
 
 // ======================================
+// TOAST NOTIFICATION SERVICE
+// ======================================
+const toastService = {
+  /**
+   * Creates and shows a toast notification
+   * @param {Object} options - Toast options
+   * @param {string} options.message - The message to display
+   * @param {string} [options.type='info'] - The type of notification (success, error, warning, info)
+   * @param {number} [options.duration=5000] - Duration in milliseconds (0 = no auto-close)
+   * @param {Object} [options.action] - Optional action button
+   * @param {string} options.action.text - Action button text
+   * @param {Function} options.action.onClick - Action button click handler
+   * @returns {HTMLElement} The created toast element
+   */
+  createToast({ message, type = 'info', duration = 5000, action } = {}) {
+    const container = document.getElementById('toastContainer');
+    if (!container) {
+      console.warn('Toast container not found');
+      return null;
+    }
+
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    // Add icon based on type
+    let icon = 'info-circle';
+    if (type === 'success') icon = 'check-circle';
+    else if (type === 'error') icon = 'exclamation-circle';
+    else if (type === 'warning') icon = 'exclamation-triangle';
+
+    // Set toast content
+    toast.innerHTML = `
+      <i class="fas fa-${icon} toast-icon"></i>
+      <div class="toast-content">
+        <div class="toast-message">${message}</div>
+        ${action ? `<button class="toast-action">${action.text}</button>` : ''}
+      </div>
+      <button class="toast-close">&times;</button>
+    `;
+
+    // Add to container
+    container.appendChild(toast);
+
+    // Show toast with a small delay to allow CSS transitions
+    setTimeout(() => toast.classList.add('show'), 10);
+
+    // Auto-remove after duration
+    let timeoutId;
+    const removeToast = () => {
+      toast.classList.remove('show');
+      setTimeout(() => {
+        if (toast.parentNode === container) {
+          container.removeChild(toast);
+        }
+      }, 300);
+    };
+
+    // Set up close button
+    const closeBtn = toast.querySelector('.toast-close');
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      clearTimeout(timeoutId);
+      removeToast();
+    });
+
+    // Set up action button if provided
+    if (action) {
+      const actionBtn = toast.querySelector('.toast-action');
+      actionBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        action.onClick();
+        removeToast();
+      });
+    }
+
+    // Auto-remove if duration is greater than 0
+    if (duration > 0) {
+      timeoutId = setTimeout(removeToast, duration);
+    }
+
+    // Make toast clickable to dismiss
+    toast.addEventListener('click', () => {
+      clearTimeout(timeoutId);
+      removeToast();
+    });
+
+    return toast;
+  },
+
+  /**
+   * Shows a success toast
+   * @param {string} message - The success message to display
+   * @param {Object} [options] - Additional options
+   * @returns {HTMLElement} The created toast element
+   */
+  success(message, options = {}) {
+    return this.createToast({
+      message,
+      type: 'success',
+      ...options
+    });
+  },
+
+  /**
+   * Shows an error toast
+   * @param {string} message - The error message to display
+   * @param {Object} [options] - Additional options
+   * @returns {HTMLElement} The created toast element
+   */
+  error(message, options = {}) {
+    return this.createToast({
+      message,
+      type: 'error',
+      ...options
+    });
+  },
+
+  /**
+   * Shows a warning toast
+   * @param {string} message - The warning message to display
+   * @param {Object} [options] - Additional options
+   * @returns {HTMLElement} The created toast element
+   */
+  warning(message, options = {}) {
+    return this.createToast({
+      message,
+      type: 'warning',
+      ...options
+    });
+  },
+
+  /**
+   * Shows an info toast
+   * @param {string} message - The info message to display
+   * @param {Object} [options] - Additional options
+   * @returns {HTMLElement} The created toast element
+   */
+  info(message, options = {}) {
+    return this.createToast({
+      message,
+      type: 'info',
+      ...options
+    });
+  },
+  
+  /**
+   * Legacy show method for backward compatibility
+   * @param {string} message - The message to display
+   * @param {string} type - The type of notification (success, error, warning, info)
+   * @param {number} duration - Duration in milliseconds
+   */
+  show(message, type = 'info', duration = 5000) {
+    return this.createToast({ message, type, duration });
+  }
+};
+
+// ======================================
 // UTILITY FUNCTIONS
 // ======================================
 const utils = {
   showMessage(message, type = "info") {
-    let alertElement = document.querySelector(".alert-custom");
-    if (!alertElement) {
-      alertElement = document.createElement("div");
-      alertElement.className = "alert-custom";
-      document.body.appendChild(alertElement);
+    // Use the new toast service for showing messages
+    if (type === 'error') {
+      toastService.error(message);
+    } else if (type === 'warning') {
+      toastService.warning(message);
+    } else if (type === 'success') {
+      toastService.success(message);
+    } else {
+      toastService.info(message);
     }
-
-    alertElement.textContent = message;
-    alertElement.className = `alert-custom alert-${type} show`;
-
-    // Auto-hide after 5 seconds
-    setTimeout(() => {
-      alertElement.classList.remove("show");
-    }, 5000);
   },
 
   formatCurrency(amount) {
@@ -524,7 +678,410 @@ async function initializeDashboard() {
   orderService.renderOrderItems();
 }
 
+// ======================================
+// INBOX SERVICE
+// ======================================
+const inboxService = {
+  STORAGE_KEY: 'dashboard_inbox_messages',
+  
+  /**
+   * Get all messages from localStorage
+   * @returns {Array} Array of messages
+   */
+  getMessages() {
+    const messages = localStorage.getItem(this.STORAGE_KEY);
+    return messages ? JSON.parse(messages) : [];
+  },
+  
+  /**
+   * Save messages to localStorage
+   * @param {Array} messages - Array of messages to save
+   */
+  saveMessages(messages) {
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(messages));
+  },
+  
+  /**
+   * Add a new message to the inbox
+   * @param {Object} message - The message to add
+   * @param {string} message.title - The message title
+   * @param {string} message.content - The message content
+   * @param {string} message.type - The message type (info, success, warning, error)
+   * @param {string} message.branch - The branch that sent the message
+   * @param {string} message.orderId - The related order ID (optional)
+   * @returns {Object} The created message with ID and timestamp
+   */
+  addMessage({ title, content, type = 'info', branch = '', orderId = '' }) {
+    const messages = this.getMessages();
+    const newMessage = {
+      id: Date.now().toString(),
+      title,
+      content,
+      type,
+      branch,
+      orderId,
+      read: false,
+      timestamp: new Date().toISOString()
+    };
+    
+    messages.unshift(newMessage);
+    this.saveMessages(messages);
+    this.updateUnreadCount();
+    
+    return newMessage;
+  },
+  
+  /**
+   * Mark a message as read
+   * @param {string} messageId - The ID of the message to mark as read
+   */
+  markAsRead(messageId) {
+    const messages = this.getMessages();
+    const updatedMessages = messages.map(msg => 
+      msg.id === messageId ? { ...msg, read: true } : msg
+    );
+    
+    this.saveMessages(updatedMessages);
+    this.updateUnreadCount();
+  },
+  
+  /**
+   * Mark all messages as read
+   */
+  markAllAsRead() {
+    const messages = this.getMessages().map(msg => ({ ...msg, read: true }));
+    this.saveMessages(messages);
+    this.updateUnreadCount();
+  },
+  
+  /**
+   * Delete a message
+   * @param {string} messageId - The ID of the message to delete
+   */
+  deleteMessage(messageId) {
+    const messages = this.getMessages().filter(msg => msg.id !== messageId);
+    this.saveMessages(messages);
+    this.updateUnreadCount();
+  },
+  
+  /**
+   * Delete all read messages
+   */
+  deleteAllRead() {
+    const messages = this.getMessages().filter(msg => !msg.read);
+    this.saveMessages(messages);
+    this.updateUnreadCount();
+  },
+  
+  /**
+   * Update the unread count badge in the UI
+   */
+  updateUnreadCount() {
+    const unreadCount = this.getMessages().filter(msg => !msg.read).length;
+    const badge = document.getElementById('unreadCount');
+    if (badge) {
+      badge.textContent = unreadCount;
+      badge.style.display = unreadCount > 0 ? 'inline-block' : 'none';
+    }
+    return unreadCount;
+  },
+  
+  /**
+   * Render messages in the inbox
+   * @param {string} filter - Filter messages by status (all, read, unread)
+   */
+  renderMessages(filter = 'all') {
+    const container = document.getElementById('inboxMessages');
+    if (!container) return;
+    
+    let messages = this.getMessages();
+    
+    // Apply filter
+    if (filter === 'read') {
+      messages = messages.filter(msg => msg.read);
+    } else if (filter === 'unread') {
+      messages = messages.filter(msg => !msg.read);
+    }
+    
+    if (messages.length === 0) {
+      container.innerHTML = `
+        <div class="inbox-empty-state">
+          <i class="fas fa-inbox"></i>
+          <p>No hay mensajes en tu bandeja de entrada</p>
+        </div>
+      `;
+      return;
+    }
+    
+    container.innerHTML = messages.map(msg => `
+      <div class="inbox-message ${msg.read ? '' : 'unread'}" data-id="${msg.id}">
+        <div class="inbox-message-header">
+          <h4 class="inbox-message-title">
+            <i class="fas fa-${this.getMessageIcon(msg.type)}"></i>
+            ${msg.title}
+          </h4>
+          <span class="inbox-message-time">${this.formatTime(msg.timestamp)}</span>
+        </div>
+        <div class="inbox-message-content">
+          <p>${msg.content}</p>
+          ${msg.branch ? `<p><strong>Sucursal:</strong> ${msg.branch}</p>` : ''}
+          ${msg.orderId ? `<p><strong>Pedido #:</strong> ${msg.orderId}</p>` : ''}
+          <div class="inbox-message-actions">
+            <button class="btn btn-sm ${msg.read ? 'btn-outline-secondary' : 'btn-primary'} mark-read" 
+                    data-id="${msg.id}">
+              ${msg.read ? 'Marcar como no leído' : 'Marcar como leído'}
+            </button>
+            <button class="btn btn-sm btn-outline-danger delete-message" data-id="${msg.id}">
+              <i class="fas fa-trash-alt"></i> Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+    
+    // Add event listeners
+    this.setupMessageEventListeners();
+  },
+  
+  /**
+   * Set up event listeners for message actions
+   */
+  setupMessageEventListeners() {
+    // Toggle message expansion
+    document.querySelectorAll('.inbox-message-header').forEach(header => {
+      header.addEventListener('click', (e) => {
+        // Don't toggle if clicking on a button inside the header
+        if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+          return;
+        }
+        
+        const message = header.closest('.inbox-message');
+        message.classList.toggle('expanded');
+        
+        // Mark as read when expanded
+        if (message.classList.contains('expanded') && !message.classList.contains('read')) {
+          const messageId = message.dataset.id;
+          this.markAsRead(messageId);
+          message.classList.remove('unread');
+        }
+      });
+    });
+    
+    // Mark as read/unread
+    document.querySelectorAll('.mark-read').forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const messageId = button.dataset.id;
+        const message = document.querySelector(`.inbox-message[data-id="${messageId}"]`);
+        
+        if (message) {
+          const isRead = message.classList.contains('read');
+          this.markAsRead(messageId);
+          
+          if (isRead) {
+            message.classList.add('unread');
+            button.textContent = 'Marcar como leído';
+            button.classList.remove('btn-outline-secondary');
+            button.classList.add('btn-primary');
+          } else {
+            message.classList.remove('unread');
+            button.textContent = 'Marcar como no leído';
+            button.classList.remove('btn-primary');
+            button.classList.add('btn-outline-secondary');
+          }
+        }
+      });
+    });
+    
+    // Delete message
+    document.querySelectorAll('.delete-message').forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const messageId = button.dataset.id;
+        this.deleteMessage(messageId);
+        document.querySelector(`.inbox-message[data-id="${messageId}"]`)?.remove();
+        
+        // If no messages left, show empty state
+        if (!document.querySelector('.inbox-message')) {
+          this.renderMessages();
+        }
+      });
+    });
+  },
+  
+  /**
+   * Get the appropriate icon for the message type
+   * @param {string} type - The message type
+   * @returns {string} The icon class
+   */
+  getMessageIcon(type) {
+    const icons = {
+      success: 'check-circle',
+      error: 'exclamation-circle',
+      warning: 'exclamation-triangle',
+      info: 'info-circle'
+    };
+    
+    return icons[type] || 'envelope';
+  },
+  
+  /**
+   * Format a timestamp as a relative time string
+   * @param {string} timestamp - ISO timestamp
+   * @returns {string} Formatted time string
+   */
+  formatTime(timestamp) {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffInMs = now - date;
+    const diffInMins = Math.floor(diffInMs / (1000 * 60));
+    const diffInHours = Math.floor(diffInMins / 60);
+    const diffInDays = Math.floor(diffInHours / 24);
+    
+    if (diffInMins < 1) return 'Hace unos segundos';
+    if (diffInMins < 60) return `Hace ${diffInMins} minuto${diffInMins > 1 ? 's' : ''}`;
+    if (diffInHours < 24) return `Hace ${diffInHours} hora${diffInHours > 1 ? 's' : ''}`;
+    if (diffInDays === 1) return 'Ayer';
+    if (diffInDays < 7) return `Hace ${diffInDays} días`;
+    
+    return date.toLocaleDateString('es-MX', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  },
+  
+  /**
+   * Initialize the inbox
+   */
+  init() {
+    // Initialize unread count
+    this.updateUnreadCount();
+    
+    // Set up inbox link
+    const inboxLink = document.getElementById('inboxLink');
+    if (inboxLink) {
+      inboxLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.openInbox();
+      });
+    }
+    
+    // Set up filter buttons
+    document.querySelectorAll('[data-filter]').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('[data-filter]').forEach(btn => 
+          btn.classList.remove('active')
+        );
+        button.classList.add('active');
+        this.renderMessages(button.dataset.filter);
+      });
+    });
+    
+    // Set up mark all as read button
+    const markAllReadBtn = document.getElementById('markAllRead');
+    if (markAllReadBtn) {
+      markAllReadBtn.addEventListener('click', () => {
+        this.markAllAsRead();
+        this.renderMessages();
+      });
+    }
+    
+    // Set up delete all read button
+    const deleteAllReadBtn = document.getElementById('deleteAllRead');
+    if (deleteAllReadBtn) {
+      deleteAllReadBtn.addEventListener('click', () => {
+        this.deleteAllRead();
+        this.renderMessages();
+      });
+    }
+    
+    // Initialize Bootstrap modal
+    this.inboxModal = new bootstrap.Modal(document.getElementById('inboxModal'));
+  },
+  
+  /**
+   * Open the inbox modal
+   */
+  openInbox() {
+    this.renderMessages();
+    this.inboxModal.show();
+  }
+};
+
+// ======================================
+// MESSAGE HANDLING FROM BRANCHES
+// ======================================
+function handleBranchMessages() {
+  // Listen for messages from branches
+  window.addEventListener('message', (event) => {
+    // Verify the origin if needed for security
+    // if (event.origin !== 'https://your-domain.com') return;
+    
+    const { data } = event;
+    
+    // Check if this is a completion message from a branch
+    if (data && data.type === 'order_completed' && data.message) {
+      const branchName = data.branch || 'sucursal';
+      const orderId = data.orderId || '';
+      
+      // Add to inbox
+      inboxService.addMessage({
+        title: `Pedido Completado - ${branchName}`,
+        content: data.message,
+        type: 'success',
+        branch: branchName,
+        orderId: orderId
+      });
+      
+      // Show toast notification with click handler to open inbox
+      const toast = toastService.createToast({
+        message: `Pedido completado en ${branchName}${orderId ? ` (${orderId})` : ''}`,
+        type: 'success',
+        duration: 5000,
+        action: {
+          text: 'Ver en bandeja',
+          onClick: () => {
+            inboxService.openInbox();
+            // Auto-filter to show only unread messages
+            setTimeout(() => {
+              const unreadFilter = document.querySelector('[data-filter="unread"]');
+              if (unreadFilter) unreadFilter.click();
+            }, 100);
+          }
+        }
+      });
+      
+      // Auto-open the inbox if it's not already open
+      if (!document.querySelector('.modal.show')) {
+        inboxService.openInbox();
+        // Auto-filter to show only unread messages
+        setTimeout(() => {
+          const unreadFilter = document.querySelector('[data-filter="unread"]');
+          if (unreadFilter) unreadFilter.click();
+        }, 100);
+      }
+      
+      // If there's a refresh function, call it to update the UI
+      if (typeof window.refreshOrders === 'function') {
+        window.refreshOrders();
+      }
+    }
+  });
+}
+
 // Start the application
 document.addEventListener("DOMContentLoaded", () => {
   authService.initializeAuthListener();
+  handleBranchMessages();
+  
+  // Initialize inbox after auth is ready
+  const checkAuth = setInterval(() => {
+    if (state.currentUser) {
+      clearInterval(checkAuth);
+      inboxService.init();
+    }
+  }, 100);
 });
