@@ -211,29 +211,45 @@ const productsService = {
       // Productos por defecto
       state.productos = [
         {
-          id: 'prod1',
-          nombre: 'Refresco de Cola',
-          codigo: 'COLA-001',
-          precio: 25.50,
-          descripcion: 'Refresco de cola de 600ml',
-          categoria: 'Bebidas'
+          id: "prod1",
+          nombre: "Coca-Cola Original",
+          codigo: "COLA-001",
+          precio: 12.5,
+          descripcion: "Coca-Cola Original 2L",
+          categoria: "Bebidas",
         },
         {
-          id: 'prod2',
-          nombre: 'Papas Fritas',
-          codigo: 'PAPAS-001',
-          precio: 18.00,
-          descripcion: 'Bolsa de papas fritas 150g',
-          categoria: 'Botanas'
+          id: "prod2",
+          nombre: "Coca-Cola Zero",
+          codigo: "COLA-002",
+          precio: 12.5,
+          descripcion: "Coca-Cola Zero 2L",
+          categoria: "Bebidas",
         },
         {
-          id: 'prod3',
-          nombre: 'Chocolate',
-          codigo: 'CHOC-001',
-          precio: 15.00,
-          descripcion: 'Barra de chocolate con leche 50g',
-          categoria: 'Dulces'
-        }
+          id: "prod3",
+          nombre: "Coca-Cola Light",
+          codigo: "COLA-003",
+          precio: 12.5,
+          descripcion: "Coca-Cola Light 2L",
+          categoria: "Bebidas",
+        },
+        {
+          id: "prod4",
+          nombre: "Fanta",
+          codigo: "FANTA-001",
+          precio: 12.5,
+          descripcion: "Fanta 2L",
+          categoria: "Bebidas",
+        },
+        {
+          id: "prod5",
+          nombre: "Sprite",
+          codigo: "SPRITE-001",
+          precio: 12.5,
+          descripcion: "Sprite 2L",
+          categoria: "Bebidas",
+        },
       ];
       this.populateProductDropdown();
     } catch (error) {
@@ -280,18 +296,23 @@ const productsService = {
 const orderService = {
   addProductToOrder() {
     const productId = DOM.productSelect.value;
-    const product = state.productos.find(p => p.id === productId);
+    const product = state.productos.find((p) => p.id === productId);
     const quantity = parseInt(DOM.productQuantity.value) || 1;
     const price = parseFloat(DOM.productPrice.value) || 0;
 
     if (!productId || !price) {
-      utils.showMessage("Por favor selecciona un producto y especifica un precio", "warning");
+      utils.showMessage(
+        "Por favor selecciona un producto y especifica un precio",
+        "warning"
+      );
       return;
     }
 
     // Verificar si el producto ya está en el pedido
-    const existingItem = state.currentOrder.items.find(item => item.id === productId);
-    
+    const existingItem = state.currentOrder.items.find(
+      (item) => item.id === productId
+    );
+
     if (existingItem) {
       // Actualizar cantidad si el producto ya existe
       existingItem.quantity += quantity;
@@ -304,7 +325,7 @@ const orderService = {
         code: product.codigo,
         quantity,
         price,
-        total: quantity * price
+        total: quantity * price,
       });
     }
 
@@ -381,7 +402,7 @@ const orderService = {
 
     // Generar un ID único para el pedido
     const orderId = `order_${Date.now()}`;
-    
+
     const orderData = {
       id: orderId,
       branch: DOM.branchSelect.value,
@@ -399,14 +420,14 @@ const orderService = {
 
     try {
       // Obtener pedidos existentes del localStorage
-      const savedOrders = JSON.parse(localStorage.getItem('orders')) || [];
-      
+      const savedOrders = JSON.parse(localStorage.getItem("orders")) || [];
+
       // Agregar el nuevo pedido
       savedOrders.push(orderData);
-      
+
       // Guardar de vuelta en el localStorage
-      localStorage.setItem('orders', JSON.stringify(savedOrders));
-      
+      localStorage.setItem("orders", JSON.stringify(savedOrders));
+
       // Mostrar mensaje de éxito
       utils.showMessage(`Pedido #${orderId} guardado exitosamente`, "success");
       console.log("Pedido guardado:", orderData);
@@ -416,7 +437,6 @@ const orderService = {
       DOM.orderForm?.reset();
       this.updateOrderSummary();
       this.renderOrderItems();
-
     } catch (error) {
       console.error("Error al guardar el pedido en localStorage:", error);
       utils.showMessage("Error al guardar el pedido", "error");
@@ -440,7 +460,10 @@ const modalService = {
     }
     if (DOM.confirmAddProduct) {
       // Asegurarse de que solo hay un manejador de eventos
-      DOM.confirmAddProduct.removeEventListener("click", orderService.addProductToOrder);
+      DOM.confirmAddProduct.removeEventListener(
+        "click",
+        orderService.addProductToOrder
+      );
       DOM.confirmAddProduct.addEventListener("click", () => {
         orderService.addProductToOrder();
       });

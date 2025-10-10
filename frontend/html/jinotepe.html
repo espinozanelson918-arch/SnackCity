@@ -29,6 +29,7 @@
   <!-- Estilos -->
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/sucursales.css">
+  <link rel="stylesheet" href="../css/orders.css">
 
   <title>Sucursal Jinotepe | Panel de Control - Coca-Cola</title>
 </head>
@@ -160,49 +161,45 @@
           </div>
         </div>
 
-        <!-- Main Content Area -->
         <div class="content-row">
           <!-- Left Column -->
           <div class="content-col">
             <!-- Recent Orders -->
             <div class="card">
-              <div class="card-header">
-                <h2>Órdenes Recientes</h2>
-                <button class="btn btn-sm btn-link">Ver todo</button>
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">Pedidos Recientes</h2>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-sm btn-outline-secondary" id="refresh-orders">
+                    <i class="fas fa-sync-alt me-1"></i> Actualizar
+                  </button>
+                </div>
               </div>
-              <div class="card-body">
+              <div class="card-body p-0">
                 <div class="table-responsive">
-                  <table class="data-table">
+                  <table class="data-table table table-hover table-striped">
                     <thead>
                       <tr>
-                        <th># Orden</th>
-                        <th>Cliente</th>
-                        <th>Productos</th>
-                        <th>Total</th>
-                        <th>Estado</th>
+                        <th scope="col"># Orden</th>
+                        <th scope="col">Fecha de Entrega</th>
+                        <th scope="col">Productos</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Acción</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td>#ORD-101</td>
-                        <td>Supermercado Jinotepe</td>
-                        <td>4 productos</td>
-                        <td>$198.75</td>
+                      <tr id="no-orders" style="display: none;">
+                        <td colspan="6" class="text-center">No hay pedidos pendientes</td>
                       </tr>
-                      <tr>
-                        <td>#ORD-102</td>
-                        <td>Pulpería El Progreso</td>
-                        <td>5 productos</td>
-                        <td>$215.30</td>
-                      </tr>
-                      <tr>
-                        <td>#ORD-103</td>
-                        <td>Mini Market Jinotepe</td>
-                        <td>3 productos</td>
-                        <td>$127.50</td>
-                      </tr>
+                      <!-- Las órdenes se cargarán aquí dinámicamente -->
                     </tbody>
                   </table>
+                  <div id="completion-toast" class="toast">
+                    <div class="toast-content">
+                      <i class="fas fa-check-circle"></i>
+                      <span id="toast-message"></span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -275,7 +272,19 @@
   </main>
 
   <!-- Scripts al final del body -->
+  <script src="../js/sucursales.js"></script>
   <script>
+    // Cargar pedidos al iniciar
+    document.addEventListener('DOMContentLoaded', function () {
+      loadOrders('Jinotepe');
+
+      // Configurar nombre de usuario
+      const userName = localStorage.getItem('userName') || 'Usuario';
+      document.querySelectorAll('#userName').forEach(el => {
+        el.textContent = userName;
+      });
+    });
+
     // Toggle sidebar en móviles
     document.getElementById('toggleSidebarBtn').addEventListener('click', function () {
       document.querySelector('.sidebar').classList.toggle('show');
@@ -291,13 +300,17 @@
       }
     });
 
-    // Actualizar nombre de usuario
-    document.addEventListener('DOMContentLoaded', function () {
-      const userName = localStorage.getItem('userName') || 'Usuario';
-      document.querySelectorAll('#userName').forEach(el => {
-        el.textContent = userName;
-      });
-    });
+    // Función para mostrar notificación
+    function showToast(message) {
+      const toast = document.getElementById('completion-toast');
+      const toastMessage = document.getElementById('toast-message');
+      toastMessage.textContent = message;
+      toast.classList.add('show');
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
   </script>
 </body>
 

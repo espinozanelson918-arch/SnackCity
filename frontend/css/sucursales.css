@@ -457,6 +457,70 @@
   }
 }
 
+/* Toast Notification */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #4caf50;
+  color: white;
+  padding: 16px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.toast i {
+  font-size: 1.5rem;
+}
+
+/* Completion Button */
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--coca-cola-red);
+  color: var(--coca-cola-red);
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-outline:hover {
+  background-color: var(--coca-cola-red);
+  color: white;
+}
+
+/* Status Badge */
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-completed {
+  background-color: #d4edda;
+  color: #155724;
+}
+
 /* Responsive adjustments */
 @media (max-width: 992px) {
   .main-content {
@@ -1044,12 +1108,6 @@
   grid-template-columns: 1fr;
   gap: var(--space-lg);
   margin-bottom: var(--space-lg);
-}
-
-@media (min-width: 992px) {
-  .content-row {
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
 .content-col {
