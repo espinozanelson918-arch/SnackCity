@@ -13,7 +13,7 @@
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="../img/favicon.ico">
-  
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,7 +38,8 @@
   <nav class="sidebar">
     <div class="sidebar-header">
       <div class="brand">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/d/dd/Coca-Cola_logo_white.png" alt="Coca-Cola" class="brand-logo">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/d/dd/Coca-Cola_logo_white.png" alt="Coca-Cola"
+          class="brand-logo">
         <h2>Panel de Control</h2>
       </div>
       <div class="user-info">
@@ -131,7 +132,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="stat-card">
             <div class="stat-icon bg-success">
               <i class="fas fa-boxes"></i>
@@ -144,7 +145,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="stat-card">
             <div class="stat-icon bg-warning">
               <i class="fas fa-clipboard-list"></i>
@@ -187,21 +188,18 @@
                         <td>Supermercado Jinotepe</td>
                         <td>4 productos</td>
                         <td>$198.75</td>
-                        <td><span class="badge badge-success">Completado</span></td>
                       </tr>
                       <tr>
                         <td>#ORD-102</td>
                         <td>Pulpería El Progreso</td>
                         <td>5 productos</td>
                         <td>$215.30</td>
-                        <td><span class="badge badge-warning">En proceso</span></td>
                       </tr>
                       <tr>
                         <td>#ORD-103</td>
                         <td>Mini Market Jinotepe</td>
                         <td>3 productos</td>
                         <td>$127.50</td>
-                        <td><span class="badge badge-danger">Pendiente</span></td>
                       </tr>
                     </tbody>
                   </table>
@@ -209,7 +207,7 @@
               </div>
             </div>
           </div>
-          
+
           <!-- Right Column -->
           <div class="content-col">
             <!-- Quick Actions -->
@@ -238,7 +236,7 @@
                 </div>
               </div>
             </div>
-            
+
             <!-- Low Stock Alert -->
             <div class="card alert-card">
               <div class="card-header">
@@ -279,22 +277,22 @@
   <!-- Scripts al final del body -->
   <script>
     // Toggle sidebar en móviles
-    document.getElementById('toggleSidebarBtn').addEventListener('click', function() {
+    document.getElementById('toggleSidebarBtn').addEventListener('click', function () {
       document.querySelector('.sidebar').classList.toggle('show');
     });
-    
+
     // Cerrar sidebar al hacer clic fuera de él
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
       const sidebar = document.querySelector('.sidebar');
       const toggleBtn = document.getElementById('toggleSidebarBtn');
-      
+
       if (window.innerWidth <= 992 && !sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
         sidebar.classList.remove('show');
       }
     });
-    
+
     // Actualizar nombre de usuario
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const userName = localStorage.getItem('userName') || 'Usuario';
       document.querySelectorAll('#userName').forEach(el => {
         el.textContent = userName;
