@@ -1,0 +1,203 @@
+/* Orders Table Styles */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.data-table thead th {
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+  text-align: left;
+  padding: 1rem;
+  border-bottom: 2px solid #e9ecef;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-clip: padding-box;
+}
+
+.data-table tbody td {
+  padding: 1rem;
+  border-bottom: 1px solid #e9ecef;
+  vertical-align: top;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-block;
+  padding: 0.35em 0.65em;
+  font-size: 0.75em;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+}
+
+.status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-completed {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+/* Delivery Date */
+.delivery-date {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+}
+
+.delivery-date i {
+  color: #6c757d;
+  font-size: 0.9em;
+}
+
+/* Products List */
+.products-list {
+  margin-bottom: 0.25rem;
+  line-height: 1.4;
+  max-height: 100px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.products-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.products-list::-webkit-scrollbar-thumb {
+  background-color: #dee2e6;
+  border-radius: 4px;
+}
+
+.products-list span {
+  display: block;
+  margin-bottom: 0.25rem;
+  padding: 0.15rem 0.25rem;
+  border-radius: 3px;
+  transition: background-color 0.2s;
+}
+
+.products-list span:hover {
+  background-color: #f8f9fa;
+}
+
+/* Notes Cell */
+.notes-cell {
+  max-width: 200px;
+  padding: 0.5rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  white-space: normal;
+  word-wrap: break-word;
+  cursor: help;
+  transition: background-color 0.2s;
+}
+
+.notes-cell:hover {
+  background-color: #e9ecef;
+}
+
+.notes-cell i {
+  opacity: 0.7;
+}
+
+/* Action Buttons */
+.btn-outline-primary {
+  color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-outline-primary:hover {
+  color: #fff;
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-outline-secondary {
+  color: #6c757d;
+  border-color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Responsive Table */
+@media (max-width: 992px) {
+  .data-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .data-table thead {
+    display: none;
+  }
+  
+  .data-table tbody tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+  }
+  
+  .data-table tbody td {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem;
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+  .data-table tbody td:before {
+    content: attr(data-label);
+    font-weight: 600;
+    margin-right: 1rem;
+    color: #6c757d;
+  }
+  
+  .data-table tbody td:last-child {
+    border-bottom: none;
+  }
+}
+
+/* Text Utilities */
+.text-muted {
+  color: #6c757d !important;
+}
+
+.text-nowrap {
+  white-space: nowrap;
+}
+
+/* No Orders Message */
+#no-orders td {
+  text-align: center;
+  padding: 2rem;
+  color: #6c757d;
+  font-style: italic;
+}

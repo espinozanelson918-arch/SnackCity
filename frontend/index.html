@@ -1,45 +1,143 @@
-<!doctype html>
-<!-- Lang -->
-<html lang="es">
+<!DOCTYPE html>
+<html lang="es" class="no-js">
 
 <head>
-  <!-- Metadatos -->
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="Pagina de administración de envíos de bebidas">
-  <meta name="keywords" content="Administración, envíos, bebidas">
+  <!-- Meta Tags -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="Sistema de gestión administrativa para agencias distribuidoras de Coca-Cola">
+  <meta name="keywords" content="Coca-Cola, distribución, gestión, inventario, ventas, facturación, login">
   <meta name="author" content="Bryan Saenz">
   <meta name="robots" content="index, follow">
-  <!-- Tipografías -->
+  <meta name="theme-color" content="#F40009">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="img/favicon.ico">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+
+  <!-- Preconnect to external resources -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap" rel="stylesheet">
-  <!-- Scripts -->
-  <script type="module" src="js/script.js" defer></script>
+
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <!-- Styles -->
   <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Scripts -->
+  <script type="module" src="js/script.js" defer></script>
+
   <!-- Title -->
-  <title>Agencia Coca-Cola</title>
+  <title>Iniciar Sesión | Sistema de Gestión Coca-Cola</title>
 </head>
 
-<body>
-  <!-- Logo -->
-  <div class="logo">
+<body class="login-page">
+  <div class="login-container">
+    <!-- Left Panel with Branding -->
+    <div class="login-branding">
+      <div class="logo-container">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/d/dd/Coca-Cola_logo_white.png" alt="Coca-Cola"
+          class="logo">
+        <h1>Sistema de Gestión</h1>
+        <p class="tagline">Plataforma integral para distribuidores autorizados</p>
+      </div>
+      <div class="branding-footer">
+        <p>© 2025 The Coca-Cola Company. Todos los derechos reservados.</p>
+      </div>
+    </div>
+
+    <!-- Right Panel with Login Form -->
+    <div class="login-form-container">
+      <div class="login-form-wrapper">
+        <div class="login-header">
+          <h2>Bienvenido de nuevo</h2>
+          <p>Ingresa tus credenciales para acceder a tu cuenta</p>
+        </div>
+
+        <form id="loginForm" class="login-form" novalidate>
+          <div class="form-group">
+            <label for="loginCorreo" class="form-label">
+              <i class="fas fa-envelope"></i> Correo Electrónico
+            </label>
+            <div class="input-group">
+              <input id="loginCorreo" name="email" type="email" class="form-control" placeholder="correo@ejemplo.com"
+                required autocomplete="username" aria-describedby="emailHelp emailError">
+              <span class="input-icon">
+                <i class="fas fa-envelope"></i>
+              </span>
+            </div>
+            <div id="emailError" class="error-message" role="alert" aria-live="polite"></div>
+            <div id="emailHelp" class="form-text">Ingresa el correo electrónico de tu cuenta.</div>
+          </div>
+
+          <div class="form-group">
+            <div class="d-flex justify-content-between">
+              <label for="loginPassword" class="form-label">
+                <i class="fas fa-lock"></i> Contraseña
+              </label>
+              <a href="html/forgot-password.html" class="forgot-password">¿Olvidaste tu contraseña?</a>
+            </div>
+            <div class="input-group">
+              <input id="loginPassword" name="password" type="password" class="form-control" placeholder="••••••••"
+                required minlength="6" autocomplete="current-password" 
+                aria-describedby="passwordHelp passwordError">
+              <span class="input-icon">
+                <i class="fas fa-lock"></i>
+              </span>
+              <button type="button" class="toggle-password" aria-label="Mostrar contraseña" tabindex="-1">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            <div id="passwordError" class="error-message" role="alert" aria-live="polite"></div>
+            <div id="passwordHelp" class="form-text">Mínimo 6 caracteres, incluyendo letras y números.</div>
+          </div>
+
+          <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="rememberMe" name="remember">
+            <label class="form-check-label" for="rememberMe">Recordar mi cuenta</label>
+          </div>
+
+          <div id="loginMsg" class="alert" role="alert" aria-live="assertive"></div>
+
+          <button type="submit" class="btn btn-primary btn-block">
+            <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+          </button>
+
+          <div class="divider">
+            <span>o</span>
+          </div>
+
+          <p class="register-text">
+            ¿No tienes una cuenta?
+            <a href="html/register.html" class="register-link">Regístrate aquí</a>
+          </p>
+        </form>
+      </div>
+
+      <div class="login-footer">
+        <p class="language-selector">
+          <span>Idioma:</span>
+          <select aria-label="Seleccionar idioma">
+            <option value="es" selected>Español</option>
+            <option value="en">English</option>
+          </select>
+        </p>
+        <p class="version">Versión 1.0.0</p>
+      </div>
+    </div>
   </div>
-  <!-- Container -->
-  <div class="container">
-    <h2>Welcome Back</h2>
-    <p>Enter your credentials to access your account</p>
-    <form id="loginForm">
-      <input id="loginCorreo" type="email" placeholder="Email" required>
-      <input id="loginPassword" type="password" placeholder="Password" required minlength="6">
-      <div id="loginMsg" class="msg"></div>
-      <button type="submit">Sign In</button>
-    </form>
-    <!-- Forgot Password Link -->
-    <a href="html/forgot-password.html" class="forgot__link">Forgot Password? Reset Password</a>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay">
+    <div class="spinner"></div>
   </div>
-  <a href="html/register.html" class="register__link">Don't have an account? Register</a>
 </body>
 
 </html>
