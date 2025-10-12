@@ -287,6 +287,70 @@ const utils = {
 };
 
 // ======================================
+// ROLE-BASED NAVIGATION RESTRICTIONS
+// ======================================
+const roleService = {
+  isBranchLink(href = '', text = '') {
+    const re = /(managua|jinotepe|diriamba|masaya)\.html$/i;
+    const t = (text || '').toLowerCase();
+    return re.test(href) || ["managua", "jinotepe", "diriamba", "masaya"].some((b) => t.includes(b));
+  },
+
+  isDashboardLink(href = '', text = '') {
+    const t = (text || '').toLowerCase();
+    return href.includes('dashboard.html') || t.includes('dashboard');
+  },
+
+  disableLink(anchor) {
+    if (!anchor) return;
+    anchor.classList.add('disabled');
+    anchor.setAttribute('aria-disabled', 'true');
+    anchor.tabIndex = -1;
+    const handler = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      toastService.info('Acceso restringido por rol');
+    };
+    // Avoid stacking multiple handlers if called again
+    anchor.removeEventListener('click', handler);
+    anchor.addEventListener('click', handler);
+  },
+
+  applyNavigationRules(role) {
+    try {
+      const links = document.querySelectorAll('.sidebar .nav-link');
+      const path = (window.location.pathname.split('/').pop() || '').toLowerCase();
+
+      links.forEach((a) => {
+        const href = (a.getAttribute('href') || '').toLowerCase();
+        const text = (a.textContent || '').trim();
+        const isBranch = this.isBranchLink(href, text);
+        const isDashboard = this.isDashboardLink(href, text);
+
+        if (role === 'admin') {
+          if (!isDashboard) this.disableLink(a);
+        } else if (role === 'gerente') {
+          if (!isBranch) this.disableLink(a);
+        }
+      });
+
+      // Enforce redirects if landed on a disallowed page
+      if (role === 'admin') {
+        if (/(managua|jinotepe|diriamba|masaya)\.html$/i.test(path)) {
+          window.location.href = 'dashboard.html';
+        }
+      } else if (role === 'gerente') {
+        if (path === 'dashboard.html' || path === '') {
+          window.location.href = 'managua.html';
+        }
+      }
+    } catch (err) {
+      console.warn('Error applying role navigation rules:', err);
+    }
+  },
+};
+
+// ======================================
 // AUTHENTICATION
 // ======================================
 const authService = {
@@ -352,6 +416,8 @@ const authService = {
       };
       DOM.userRole.textContent = roleNames[state.userData.rol] || "Usuario";
     }
+    // Apply role-based navigation restrictions
+    roleService.applyNavigationRules(state.userData.rol);
   },
 };
 
