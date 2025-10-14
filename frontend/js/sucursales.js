@@ -236,7 +236,8 @@ function updateOrdersTable(orders) {
 
     // Determine status
     const isPending = order.status === "pending" || order.status === undefined;
-    const statusText = isPending ? "Pendiente" : "Completado";
+    const isDenied = order.status === "denied";
+    const statusText = isPending ? "Pendiente" : isDenied ? "Denegado" : "Completado";
 
     // Create the row HTML
     row.innerHTML = `
@@ -275,7 +276,7 @@ function updateOrdersTable(orders) {
       <td class="text-nowrap">${totalAmount}</td>
       <td>
         <span class="status-badge ${
-          isPending ? "status-pending" : "status-completed"
+          isPending ? "status-pending" : isDenied ? "status-denied" : "status-completed"
         }">
           ${statusText}
         </span>
@@ -288,6 +289,12 @@ function updateOrdersTable(orders) {
                 ${!isPending ? "disabled" : ""}
                 onclick="completeOrder('${order.id}')">
           ${isPending ? "Completar" : "Completado"}
+        </button>
+        <button class="btn btn-sm btn-outline-danger"
+                data-order-id="${order.id}"
+                ${!isPending ? "disabled" : ""}
+                onclick="denyOrder('${order.id}')">
+          Denegar
         </button>
       </td>
     `;
@@ -325,6 +332,39 @@ function completeOrder(orderId) {
 
     // Show success message with branch info
     showToast(`Pedido #${orderId} de ${orderBranch} completado exitosamente`);
+
+    // Reload the orders to update the table
+    const currentBranch = document
+      .querySelector(".top-nav h1")
+      .textContent.trim();
+    loadOrders(currentBranch);
+
+    // Update dashboard stats
+    updateDashboardStats();
+  }
+}
+
+// Function to deny an order
+function denyOrder(orderId) {
+  // Get all orders from localStorage
+  let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+  // Find the order to deny
+  const orderIndex = orders.findIndex((order) => order.id === orderId);
+
+  if (orderIndex !== -1) {
+    // Get the branch of the order being denied
+    const orderBranch = orders[orderIndex].branch;
+
+    // Update order status
+    orders[orderIndex].status = "denied";
+    orders[orderIndex].deniedAt = new Date().toISOString();
+
+    // Save back to localStorage
+    localStorage.setItem("orders", JSON.stringify(orders));
+
+    // Show info message with branch info
+    showToast(`Pedido #${orderId} de ${orderBranch} fue denegado`);
 
     // Reload the orders to update the table
     const currentBranch = document

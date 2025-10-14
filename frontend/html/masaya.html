@@ -38,7 +38,8 @@
   <nav class="sidebar">
     <div class="sidebar-header">
       <div class="brand">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/d/dd/Coca-Cola_logo_white.png" alt="Coca-Cola" class="brand-logo">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/d/dd/Coca-Cola_logo_white.png" alt="Coca-Cola"
+          class="brand-logo">
         <h2>Panel de Control</h2>
       </div>
       <div class="user-info">
@@ -108,7 +109,7 @@
             <span class="badge">4</span>
           </button>
           <button class="btn-user" id="userMenuBtn">
-            <span class="user-name">Usuario</span>
+            <span class="user-name">Cerrar Sesión</span>
             <i class="fas fa-chevron-down"></i>
           </button>
         </div>
@@ -132,7 +133,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="stat-card">
             <div class="stat-icon bg-success">
               <i class="fas fa-boxes"></i>
@@ -145,7 +146,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="stat-card">
             <div class="stat-icon bg-warning">
               <i class="fas fa-clipboard-list"></i>
@@ -210,7 +211,7 @@
               </div>
             </div>
           </div>
-          
+
           <!-- Right Column -->
           <div class="content-col">
             <!-- Quick Actions -->
@@ -239,7 +240,48 @@
                 </div>
               </div>
             </div>
-            
+
+            <div class="card">
+              <div class="card-header">
+                <h2>Nuevo Pedido</h2>
+              </div>
+              <div class="card-body">
+                <form id="branchOrderForm" class="order-form" novalidate>
+                  <div class="form-group">
+                    <label for="orderDeliveryDate" class="form-label">
+                      <i class="far fa-calendar-alt"></i> Fecha de entrega
+                    </label>
+                    <div class="input-group">
+                      <input type="date" id="orderDeliveryDate" class="form-control" required>
+                      <span class="input-icon"><i class="far fa-calendar-alt"></i></span>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="orderProducts" class="form-label">
+                      <i class="fas fa-box"></i> Productos
+                    </label>
+                    <textarea id="orderProducts" class="form-control" rows="4"
+                      placeholder="Ejemplos:\n2x Coca-Cola 3L; 1x Sprite 2.5L\nO una por línea" required></textarea>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="orderNotes" class="form-label">
+                      <i class="far fa-sticky-note"></i> Notas (opcional)
+                    </label>
+                    <textarea id="orderNotes" class="form-control" rows="2"
+                      placeholder="Observaciones adicionales"></textarea>
+                  </div>
+
+                  <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                      <i class="fas fa-paper-plane"></i> Enviar pedido
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
             <!-- Low Stock Alert -->
             <div class="card alert-card">
               <div class="card-header">
@@ -281,22 +323,22 @@
   <script src="../js/sucursales.js"></script>
   <script>
     // Toggle sidebar en móviles
-    document.getElementById('toggleSidebarBtn').addEventListener('click', function() {
+    document.getElementById('toggleSidebarBtn').addEventListener('click', function () {
       document.querySelector('.sidebar').classList.toggle('show');
     });
-    
+
     // Cerrar sidebar al hacer clic fuera de él
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
       const sidebar = document.querySelector('.sidebar');
       const toggleBtn = document.getElementById('toggleSidebarBtn');
-      
+
       if (window.innerWidth <= 992 && !sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
         sidebar.classList.remove('show');
       }
     });
-    
+
     // Actualizar nombre de usuario
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const userName = localStorage.getItem('userName') || 'Usuario';
       document.querySelectorAll('#userName').forEach(el => {
         el.textContent = userName;

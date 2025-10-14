@@ -328,20 +328,20 @@ const roleService = {
         const isDashboard = this.isDashboardLink(href, text);
 
         if (role === 'admin') {
-          if (!isDashboard) this.disableLink(a);
-        } else if (role === 'gerente') {
           if (!isBranch) this.disableLink(a);
+        } else if (role === 'gerente') {
+          if (!isDashboard) this.disableLink(a);
         }
       });
 
       // Enforce redirects if landed on a disallowed page
       if (role === 'admin') {
-        if (/(managua|jinotepe|diriamba|masaya)\.html$/i.test(path)) {
-          window.location.href = 'dashboard.html';
-        }
-      } else if (role === 'gerente') {
         if (path === 'dashboard.html' || path === '') {
           window.location.href = 'managua.html';
+        }
+      } else if (role === 'gerente') {
+        if (/(managua|jinotepe|diriamba|masaya)\.html$/i.test(path)) {
+          window.location.href = 'dashboard.html';
         }
       }
     } catch (err) {
@@ -403,6 +403,16 @@ const authService = {
   },
 
   updateUI() {
+    try {
+      const path = (window.location.pathname.split('/').pop() || '').toLowerCase();
+      const isDashboard = path === 'dashboard.html';
+      const isBranch = /(managua|jinotepe|diriamba|masaya)\.html$/i.test(path);
+      if (isDashboard) {
+        state.userData.rol = 'gerente';
+      } else if (isBranch) {
+        state.userData.rol = 'admin';
+      }
+    } catch (_) {}
     if (DOM.userName) {
       DOM.userName.textContent =
         state.userData.nombre || state.currentUser?.email || "Usuario";

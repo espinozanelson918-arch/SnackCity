@@ -63,6 +63,11 @@
   color: #155724;
 }
 
+.status-denied {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
 /* Delivery Date */
 .delivery-date {
   display: flex;
