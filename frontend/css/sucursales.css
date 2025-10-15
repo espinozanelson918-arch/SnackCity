@@ -521,6 +521,12 @@
   color: #155724;
 }
 
+/* New: Denied status */
+.status-denied {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
 /* Responsive adjustments */
 @media (max-width: 992px) {
   .main-content {
@@ -834,6 +840,18 @@
   background-color: var(--coca-cola-red);
   border-color: var(--coca-cola-red);
   color: var(--coca-cola-white);
+}
+
+/* New: Outline danger button for deny action */
+.btn-outline-danger {
+  border: 1px solid var(--coca-cola-red) !important;
+  color: var(--coca-cola-red) !important;
+}
+
+.btn-outline-danger:hover {
+  color: var(--coca-cola-white) !important;
+  background-color: var(--coca-cola-red) !important;
+  border-color: var(--coca-cola-red) !important;
 }
 
 /* Badge Variants */

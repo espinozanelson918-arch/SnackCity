@@ -19,4 +19,18 @@ document.addEventListener("DOMContentLoaded", function () {
   if (userNameElement) {
     userNameElement.textContent = userName;
   }
+
+  // Logout handler for branch pages
+  const userMenuBtn = document.getElementById("userMenuBtn");
+  if (userMenuBtn && typeof window !== 'undefined') {
+    userMenuBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      if (typeof window.snackcitySignOut === "function") {
+        window.snackcitySignOut();
+      } else {
+        // Fallback: go to login page
+        window.location.href = "../index.html";
+      }
+    });
+  }
 });
