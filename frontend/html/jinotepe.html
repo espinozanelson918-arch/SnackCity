@@ -164,45 +164,6 @@
         <div class="content-row">
           <!-- Left Column -->
           <div class="content-col">
-            <!-- Recent Orders -->
-            <div class="card">
-              <div class="card-header d-flex justify-content-between align-items-center">
-                <h2 class="mb-0">Pedidos Recientes</h2>
-                <div class="d-flex gap-2">
-                  <button class="btn btn-sm btn-outline-secondary" id="refresh-orders">
-                    <i class="fas fa-sync-alt me-1"></i> Actualizar
-                  </button>
-                </div>
-              </div>
-              <div class="card-body p-0">
-                <div class="table-responsive">
-                  <table class="data-table table table-hover table-striped">
-                    <thead>
-                      <tr>
-                        <th scope="col"># Orden</th>
-                        <th scope="col">Fecha de Entrega</th>
-                        <th scope="col">Productos</th>
-                        <th scope="col">Total</th>
-                        <th scope="col">Estado</th>
-                        <th scope="col">Acción</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr id="no-orders" style="display: none;">
-                        <td colspan="6" class="text-center">No hay pedidos pendientes</td>
-                      </tr>
-                      <!-- Las órdenes se cargarán aquí dinámicamente -->
-                    </tbody>
-                  </table>
-                  <div id="completion-toast" class="toast">
-                    <div class="toast-content">
-                      <i class="fas fa-check-circle"></i>
-                      <span id="toast-message"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
 
           <!-- Right Column -->
@@ -214,7 +175,7 @@
               </div>
               <div class="card-body">
                 <div class="quick-actions">
-                  <button class="btn-action">
+                  <button class="btn-action" id="newOrderBtn">
                     <i class="fas fa-plus-circle"></i>
                     <span>Nueva Orden</span>
                   </button>
