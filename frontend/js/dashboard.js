@@ -664,6 +664,8 @@ const orderService = {
     } catch (error) {
       console.error("Error al guardar el pedido en localStorage:", error);
       utils.showMessage("Error al guardar el pedido", "error");
+    } finally {
+      // No hay acciones a realizar en finally
     }
   },
 };
@@ -691,7 +693,8 @@ const ordersTableService = {
         .join("<br>");
     };
 
-    tbody.innerHTML = orders
+    const pendingOrders = orders.filter(o => (o.status || 'pending').toLowerCase() === 'pending');
+    tbody.innerHTML = pendingOrders
       .map(
         (order) => `
         <tr>
@@ -720,9 +723,21 @@ const ordersTableService = {
         const orderId = e.currentTarget.dataset.id;
         const idx = orders.findIndex((o) => o.id === orderId);
         if (idx !== -1) {
-          orders[idx].status = "accepted";
+          const acceptedOrder = orders[idx];
+          // Add to history
+          historyService.addEntry({
+            id: acceptedOrder.id,
+            branch: acceptedOrder.branch,
+            products: Array.isArray(acceptedOrder.items) ? acceptedOrder.items.map(it => ({ name: it.name || it.code, quantity: it.quantity })) : [],
+            deliveryDate: acceptedOrder.deliveryDate || '',
+            notes: acceptedOrder.notes || '',
+            status: 'Aceptado',
+            timestamp: new Date().toISOString(),
+          });
+          // Remove from pending storage
+          orders.splice(idx, 1);
           localStorage.setItem("orders", JSON.stringify(orders));
-          utils.showMessage(`Pedido ${orders[idx].id} aceptado`, "success");
+          utils.showMessage(`Pedido ${orderId} aceptado`, "success");
           this.render();
         }
       });
@@ -733,9 +748,21 @@ const ordersTableService = {
         const orderId = e.currentTarget.dataset.id;
         const idx = orders.findIndex((o) => o.id === orderId);
         if (idx !== -1) {
-          orders[idx].status = "cancelled";
+          const cancelledOrder = orders[idx];
+          // Add to history
+          historyService.addEntry({
+            id: cancelledOrder.id,
+            branch: cancelledOrder.branch,
+            products: Array.isArray(cancelledOrder.items) ? cancelledOrder.items.map(it => ({ name: it.name || it.code, quantity: it.quantity })) : [],
+            deliveryDate: cancelledOrder.deliveryDate || '',
+            notes: cancelledOrder.notes || '',
+            status: 'Cancelado',
+            timestamp: new Date().toISOString(),
+          });
+          // Remove from pending storage
+          orders.splice(idx, 1);
           localStorage.setItem("orders", JSON.stringify(orders));
-          utils.showMessage(`Pedido ${orders[idx].id} cancelado`, "warning");
+          utils.showMessage(`Pedido ${orderId} cancelado`, "warning");
           this.render();
         }
       });
@@ -747,6 +774,7 @@ const ordersTableService = {
 // MODAL MANAGEMENT
 // ======================================
 const modalService = {
+  // ... rest of the code remains the same ...
   initialize() {
     if (DOM.addProductBtn) {
       DOM.addProductBtn.addEventListener("click", () => this.openModal());
@@ -1170,6 +1198,77 @@ const inboxService = {
 // ======================================
 // MESSAGE HANDLING FROM BRANCHES
 // ======================================
+// ======================================
+// ORDER HISTORY SERVICE
+// ======================================
+const historyService = {
+  storageKey: 'order_history',
+
+  getAll() {
+    try {
+      return JSON.parse(localStorage.getItem(this.storageKey) || '[]');
+    } catch {
+      return [];
+    }
+  },
+
+  saveAll(items) {
+    localStorage.setItem(this.storageKey, JSON.stringify(items));
+  },
+
+  addEntry(entry) {
+    const items = this.getAll();
+    const withId = {
+      id: entry.id || `${Date.now()}`,
+      branch: entry.branch || 'N/D',
+      products: Array.isArray(entry.products) ? entry.products : [],
+      deliveryDate: entry.deliveryDate || '',
+      notes: entry.notes || '',
+      status: entry.status || 'Pendiente',
+      timestamp: entry.timestamp || new Date().toISOString(),
+    };
+    items.unshift(withId);
+    this.saveAll(items);
+    this.render();
+  },
+
+  formatProducts(products) {
+    if (!products || products.length === 0) return '—';
+    return products
+      .map(p => `${p.name || p.product || 'Producto'} x${p.quantity || p.qty || 1}`)
+      .join(', ');
+  },
+
+  render() {
+    const tbody = document.getElementById('historyTableBody');
+    if (!tbody) return;
+    const items = this.getAll();
+    if (items.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Sin registros</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = items.map(it => `
+      <tr>
+        <td>${it.id || '—'}</td>
+        <td>${it.branch || '—'}</td>
+        <td>${this.formatProducts(it.products)}</td>
+        <td>${it.deliveryDate || '—'}</td>
+        <td>${it.notes || '—'}</td>
+        <td><span class="status-badge ${String(it.status).toLowerCase()}">${it.status}</span></td>
+        <td>${new Date(it.timestamp).toLocaleString('es-MX')}</td>
+      </tr>
+    `).join('');
+  },
+
+  init() {
+    this.render();
+    window.historyService = this;
+  }
+};
+
+// ======================================
+// MESSAGE HANDLING FROM BRANCHES
+// ======================================
 function handleBranchMessages() {
   // Listen for messages from branches
   window.addEventListener('message', (event) => {
@@ -1209,6 +1308,16 @@ function handleBranchMessages() {
           }
         }
       });
+
+      historyService.addEntry({
+        id: orderId,
+        branch: branchName,
+        products: data.products || [],
+        deliveryDate: data.deliveryDate || '',
+        notes: data.notes || data.message || '',
+        status: 'Aceptado',
+        timestamp: new Date().toISOString(),
+      });
       
       // Auto-open the inbox if it's not already open
       if (!document.querySelector('.modal.show')) {
@@ -1225,6 +1334,31 @@ function handleBranchMessages() {
         window.refreshOrders();
       }
     }
+
+    if (data && data.type === 'order_canceled' && (data.message || data.reason)) {
+      const branchName = data.branch || 'sucursal';
+      const orderId = data.orderId || '';
+
+      inboxService.addMessage({
+        title: `Pedido Cancelado - ${branchName}`,
+        content: data.message || data.reason || 'El pedido fue cancelado',
+        type: 'warning',
+        branch: branchName,
+        orderId: orderId
+      });
+
+      toastService.warning(`Pedido cancelado en ${branchName}${orderId ? ` (${orderId})` : ''}`);
+
+      historyService.addEntry({
+        id: orderId,
+        branch: branchName,
+        products: data.products || [],
+        deliveryDate: data.deliveryDate || '',
+        notes: data.notes || data.message || data.reason || '',
+        status: 'Cancelado',
+        timestamp: new Date().toISOString(),
+      });
+    }
   });
 }
 
@@ -1240,4 +1374,5 @@ document.addEventListener("DOMContentLoaded", () => {
       inboxService.init();
     }
   }, 100);
+  historyService.init();
 });
