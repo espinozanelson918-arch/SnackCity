@@ -777,17 +777,25 @@ textarea.form-control {
   border: none;
   font-weight: 600;
   text-transform: uppercase;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   letter-spacing: 0.5px;
-  padding: var(--space-lg);
-  text-align: left;
+  padding: var(--space-md);
+  text-align: center;
   font-family: "Montserrat", sans-serif;
 }
 
 .table td {
-  padding: var(--space-lg);
+  padding: var(--space-md);
   border-bottom: 1px solid var(--coca-cola-border);
   vertical-align: middle;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* Center and slightly compact specific products tables */
+.products-table th,
+.products-table td {
+  text-align: center;
 }
 
 .table tbody tr:last-child td {

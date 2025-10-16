@@ -54,7 +54,7 @@ const CONFIG = {
   redirects: {
     admin: "html/managua.html",
     gerente: "html/dashboard.html",
-    default: "index.html",
+    default: "../index.html",
   },
   timeouts: {
     redirect: 2000,

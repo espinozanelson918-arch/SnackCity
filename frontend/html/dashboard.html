@@ -137,7 +137,7 @@
       <div class="container-fluid">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Pedidos almacenados</h3>
+            <h3 class="card-title">Pedidos Pendientes</h3>
           </div>
           <div class="card-body">
             <div class="table-responsive">
@@ -161,8 +161,34 @@
       </div>
     </div>
 
-  <!-- Toast Notifications Container -->
-  <div class="toast-container" id="toastContainer"></div>
+  <!-- Historial de Pedidos -->
+  <div class="page-content">
+    <div class="container-fluid">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Historial de pedidos</h3>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table products-table">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Sucursal</th>
+                  <th>Productos</th>
+                  <th>Fecha de entrega</th>
+                  <th>Notas</th>
+                  <th>Estatus</th>
+                  <th>Registrado</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
