@@ -660,10 +660,86 @@ const orderService = {
       DOM.orderForm?.reset();
       this.updateOrderSummary();
       this.renderOrderItems();
+      ordersTableService.render();
     } catch (error) {
       console.error("Error al guardar el pedido en localStorage:", error);
       utils.showMessage("Error al guardar el pedido", "error");
     }
+  },
+};
+
+// ======================================
+// ORDERS TABLE SERVICE
+// ======================================
+const ordersTableService = {
+  render() {
+    const orders = JSON.parse(localStorage.getItem("orders")) || [];
+    const tbody = document.getElementById("ordersTableBody");
+    if (!tbody) return;
+
+    const formatStatus = (status) => {
+      const s = (status || "pending").toLowerCase();
+      if (s === "accepted") return '<span class="badge badge-success">Aceptado</span>';
+      if (s === "cancelled") return '<span class="badge badge-danger">Cancelado</span>';
+      return '<span class="badge badge-warning">Pendiente</span>';
+    };
+
+    const formatProducts = (items = []) => {
+      if (!Array.isArray(items) || items.length === 0) return "-";
+      return items
+        .map((it) => `${it.name || it.code || "Producto"} x ${it.quantity || 0}`)
+        .join("<br>");
+    };
+
+    tbody.innerHTML = orders
+      .map(
+        (order) => `
+        <tr>
+          <td>${order.id}</td>
+          <td>${order.branch}</td>
+          <td>${formatProducts(order.items)}</td>
+          <td>${order.deliveryDate || "-"}</td>
+          <td>${order.notes ? order.notes : "-"}</td>
+          <td>${formatStatus(order.status)}</td>
+          <td>
+            <button class="btn btn-sm btn-outline accept-order" data-id="${order.id}">
+              <i class="fas fa-check"></i> Aceptar
+            </button>
+            <button class="btn btn-sm btn-outline-danger cancel-order" data-id="${order.id}">
+              <i class="fas fa-times"></i> Cancelar
+            </button>
+          </td>
+        </tr>
+      `
+      )
+      .join("");
+
+    // Add event listeners to accept and cancel buttons
+    tbody.querySelectorAll(".accept-order").forEach((button) => {
+      button.addEventListener("click", (e) => {
+        const orderId = e.currentTarget.dataset.id;
+        const idx = orders.findIndex((o) => o.id === orderId);
+        if (idx !== -1) {
+          orders[idx].status = "accepted";
+          localStorage.setItem("orders", JSON.stringify(orders));
+          utils.showMessage(`Pedido ${orders[idx].id} aceptado`, "success");
+          this.render();
+        }
+      });
+    });
+
+    tbody.querySelectorAll(".cancel-order").forEach((button) => {
+      button.addEventListener("click", (e) => {
+        const orderId = e.currentTarget.dataset.id;
+        const idx = orders.findIndex((o) => o.id === orderId);
+        if (idx !== -1) {
+          orders[idx].status = "cancelled";
+          localStorage.setItem("orders", JSON.stringify(orders));
+          utils.showMessage(`Pedido ${orders[idx].id} cancelado`, "warning");
+          this.render();
+        }
+      });
+    });
   },
 };
 
@@ -745,6 +821,7 @@ async function initializeDashboard() {
   await productsService.loadProducts();
   orderService.updateOrderSummary();
   orderService.renderOrderItems();
+  ordersTableService.render();
 }
 
 // ======================================
@@ -1067,8 +1144,13 @@ const inboxService = {
       });
     }
     
-    // Initialize Bootstrap modal
-    this.inboxModal = new bootstrap.Modal(document.getElementById('inboxModal'));
+    // Initialize Bootstrap modal (guarded if Bootstrap is available)
+    const inboxModalEl = document.getElementById('inboxModal');
+    if (inboxModalEl && typeof window !== 'undefined' && window.bootstrap && typeof window.bootstrap.Modal === 'function') {
+      this.inboxModal = new window.bootstrap.Modal(inboxModalEl);
+    } else {
+      this.inboxModal = null;
+    }
   },
   
   /**
@@ -1076,7 +1158,12 @@ const inboxService = {
    */
   openInbox() {
     this.renderMessages();
-    this.inboxModal.show();
+    if (this.inboxModal && typeof this.inboxModal.show === 'function') {
+      this.inboxModal.show();
+    } else {
+      // Bootstrap not loaded; skip showing modal to avoid runtime error
+      console.warn('Inbox modal no inicializado (Bootstrap no disponible).');
+    }
   }
 };
 

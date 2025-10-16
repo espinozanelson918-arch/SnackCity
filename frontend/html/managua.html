@@ -165,51 +165,6 @@
         <div class="content-row">
           <!-- Left Column -->
           <div class="content-col">
-            <!-- Recent Orders -->
-            <div class="card">
-              <div class="card-header">
-                <h2>Órdenes Recientes</h2>
-                <button class="btn btn-sm btn-link">Ver todo</button>
-              </div>
-              <div class="card-body">
-                <div class="table-responsive">
-                  <table class="data-table">
-                    <thead>
-                      <tr>
-                        <th># Orden</th>
-                        <th>Cliente</th>
-                        <th>Productos</th>
-                        <th>Total</th>
-                        <th>Estado</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>#ORD-301</td>
-                        <td>Supermercado La Unión</td>
-                        <td>8 productos</td>
-                        <td>$412.80</td>
-                        <td><span class="badge badge-success">Completado</span></td>
-                      </tr>
-                      <tr>
-                        <td>#ORD-302</td>
-                        <td>Pulpería Doña Tere</td>
-                        <td>5 productos</td>
-                        <td>$287.50</td>
-                        <td><span class="badge badge-warning">En proceso</span></td>
-                      </tr>
-                      <tr>
-                        <td>#ORD-303</td>
-                        <td>Mini Market Managua</td>
-                        <td>6 productos</td>
-                        <td>$356.20</td>
-                        <td><span class="badge badge-danger">Pendiente</span></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
           </div>
 
           <!-- Right Column -->
@@ -221,7 +176,7 @@
               </div>
               <div class="card-body">
                 <div class="quick-actions">
-                  <button class="btn-action">
+                  <button class="btn-action" id="newOrderBtn">
                     <i class="fas fa-plus-circle"></i>
                     <span>Nueva Orden</span>
                   </button>
@@ -238,47 +193,6 @@
                     <span>Ver Reportes</span>
                   </button>
                 </div>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-header">
-                <h2>Nuevo Pedido</h2>
-              </div>
-              <div class="card-body">
-                <form id="branchOrderForm" class="order-form" novalidate>
-                  <div class="form-group">
-                    <label for="orderDeliveryDate" class="form-label">
-                      <i class="far fa-calendar-alt"></i> Fecha de entrega
-                    </label>
-                    <div class="input-group">
-                      <input type="date" id="orderDeliveryDate" class="form-control" required>
-                      <span class="input-icon"><i class="far fa-calendar-alt"></i></span>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="orderProducts" class="form-label">
-                      <i class="fas fa-box"></i> Productos
-                    </label>
-                    <textarea id="orderProducts" class="form-control" rows="4"
-                      placeholder="Ejemplos:\n2x Coca-Cola 3L; 1x Sprite 2.5L\nO una por línea" required></textarea>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="orderNotes" class="form-label">
-                      <i class="far fa-sticky-note"></i> Notas (opcional)
-                    </label>
-                    <textarea id="orderNotes" class="form-control" rows="2"
-                      placeholder="Observaciones adicionales"></textarea>
-                  </div>
-
-                  <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">
-                      <i class="fas fa-paper-plane"></i> Enviar pedido
-                    </button>
-                  </div>
-                </form>
               </div>
             </div>
 

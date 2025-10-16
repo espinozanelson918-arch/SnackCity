@@ -1216,3 +1216,62 @@
 .flex-grow {
   flex-grow: 1;
 }
+
+/* ===== Modal (for branch pages) ===== */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal.show {
+  display: flex !important;
+}
+
+.modal-dialog {
+  width: 95%;
+  max-width: 800px;
+}
+
+.modal-content {
+  background: var(--coca-cola-white);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  background: linear-gradient(135deg, var(--coca-cola-red), #d10010);
+  color: var(--coca-cola-white);
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.btn-close {
+  background: transparent;
+  border: none;
+  color: var(--coca-cola-white);
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: var(--space-lg);
+}
+
+.form-group { margin-bottom: var(--space-md); }
+.form-label { display: block; font-weight: 600; margin-bottom: var(--space-xs); }
+.form-control { width: 100%; padding: 0.5rem 0.75rem; border: 1px solid var(--border-light); border-radius: var(--radius-sm); }
+.form-actions { display: flex; gap: var(--space-sm); justify-content: flex-end; margin-top: var(--space-md); }
