@@ -4,6 +4,21 @@
 /* Import styles.css variables */
 @import url("./styles.css");
 
+/* Local compact sizing overrides for dashboard */
+:root {
+  /* slightly smaller spacing scale */
+  --space-xs: 0.25rem;
+  --space-sm: 0.4rem;
+  --space-md: 0.7rem;
+  --space-lg: 0.95rem;
+  --space-xl: 1.2rem;
+
+  /* slightly tighter radii */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+}
+
 /* ===== LAYOUT STRUCTURE ===== */
 .dashboard-page {
   display: flex;
