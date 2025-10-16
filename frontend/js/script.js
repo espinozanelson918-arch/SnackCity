@@ -52,7 +52,7 @@ const CONFIG = {
     },
   },
   redirects: {
-    admin: "html/dashboard.html",
+    admin: "html/managua.html",
     gerente: "html/dashboard.html",
     default: "index.html",
   },

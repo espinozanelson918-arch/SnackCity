@@ -404,14 +404,7 @@ const authService = {
 
   updateUI() {
     try {
-      const path = (window.location.pathname.split('/').pop() || '').toLowerCase();
-      const isDashboard = path === 'dashboard.html';
-      const isBranch = /(managua|jinotepe|diriamba|masaya)\.html$/i.test(path);
-      if (isDashboard) {
-        state.userData.rol = 'gerente';
-      } else if (isBranch) {
-        state.userData.rol = 'admin';
-      }
+      // Roles deben provenir exclusivamente de Firestore; no forzar por ruta
     } catch (_) {}
     if (DOM.userName) {
       DOM.userName.textContent =
