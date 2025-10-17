@@ -301,7 +301,7 @@ const roleService = {
     return href.includes('dashboard.html') || t.includes('dashboard');
   },
 
-  disableLink(anchor) {
+  disableLink(anchor, message = 'Acceso restringido por rol') {
     if (!anchor) return;
     anchor.classList.add('disabled');
     anchor.setAttribute('aria-disabled', 'true');
@@ -309,17 +309,28 @@ const roleService = {
     const handler = (e) => {
       e.preventDefault();
       e.stopPropagation();
-      toastService.info('Acceso restringido por rol');
+      toastService.info(message);
     };
     // Avoid stacking multiple handlers if called again
     anchor.removeEventListener('click', handler);
     anchor.addEventListener('click', handler);
   },
 
-  applyNavigationRules(role) {
+  branchNameToFile(name = '') {
+    const n = (name || '').toLowerCase().trim();
+    if (n.includes('managua')) return 'managua.html';
+    if (n.includes('jinotepe')) return 'jinotepe.html';
+    if (n.includes('diriamba')) return 'diriamba.html';
+    if (n.includes('masaya')) return 'masaya.html';
+    return '';
+  },
+
+  applyNavigationRules(role, allowedBranch) {
     try {
       const links = document.querySelectorAll('.sidebar .nav-link');
       const path = (window.location.pathname.split('/').pop() || '').toLowerCase();
+
+      const allowedBranchFile = this.branchNameToFile(allowedBranch);
 
       links.forEach((a) => {
         const href = (a.getAttribute('href') || '').toLowerCase();
@@ -328,20 +339,27 @@ const roleService = {
         const isDashboard = this.isDashboardLink(href, text);
 
         if (role === 'admin') {
-          if (!isBranch) this.disableLink(a);
+          // Admin: solo Dashboard
+          if (!isDashboard) this.disableLink(a, 'Acceso restringido. Solo puedes entrar al Dashboard');
         } else if (role === 'gerente') {
-          if (!isDashboard) this.disableLink(a);
+          // Gerente: solo su sucursal
+          const file = href.split('/').pop();
+          const matchesAllowed = isBranch && allowedBranchFile && file === allowedBranchFile;
+          if (!matchesAllowed) this.disableLink(a, `Acceso restringido. Solo puedes entrar a: ${allowedBranch || 'tu sucursal asignada'}`);
+        } else {
+          // Otros roles: sin restricciones (por ahora)
         }
       });
 
-      // Enforce redirects if landed on a disallowed page
+      // Redirecciones estrictas
       if (role === 'admin') {
-        if (path === 'dashboard.html' || path === '') {
-          window.location.href = 'managua.html';
+        if (path !== 'dashboard.html') {
+          window.location.href = 'dashboard.html';
         }
       } else if (role === 'gerente') {
-        if (/(managua|jinotepe|diriamba|masaya)\.html$/i.test(path)) {
-          window.location.href = 'dashboard.html';
+        const target = allowedBranchFile;
+        if (target && path !== target) {
+          window.location.href = target;
         }
       }
     } catch (err) {
@@ -419,8 +437,8 @@ const authService = {
       };
       DOM.userRole.textContent = roleNames[state.userData.rol] || "Usuario";
     }
-    // Apply role-based navigation restrictions
-    roleService.applyNavigationRules(state.userData.rol);
+    // Apply role-based navigation restrictions using Firestore role and sucursal
+    roleService.applyNavigationRules(state.userData.rol, state.userData.sucursal);
   },
 };
 

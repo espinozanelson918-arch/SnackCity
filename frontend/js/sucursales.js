@@ -562,6 +562,12 @@ document.addEventListener("DOMContentLoaded", () => {
   } catch (e) {
     console.error("Error setting up Nueva Orden modal:", e);
   }
+
+  try {
+    setupBranchReportsView(branchName);
+  } catch (e) {
+    console.error("Error setting up Reports view:", e);
+  }
 });
 
 // Create and handle the Nueva Orden modal for branch pages
@@ -886,4 +892,107 @@ function parseProductsToItems(input) {
     items.push({ id: `item_${Date.now()}_${Math.random().toString(36).slice(2,7)}`, name, code: "", quantity, price: 0, total: 0 });
   }
   return items;
+}
+
+function setupBranchReportsView(branchName) {
+  const candidates = Array.from(document.querySelectorAll(".quick-actions .btn-action"));
+  const byText = candidates.filter((btn) => (btn.textContent || "").toLowerCase().includes("ver reportes"));
+  const idBtn = document.getElementById("viewReportsBtn");
+  const buttons = [];
+  if (idBtn) buttons.push(idBtn);
+  byText.forEach((b) => { if (!buttons.includes(b)) buttons.push(b); });
+  if (!buttons.length) {
+    setTimeout(() => setupBranchReportsView(branchName), 100);
+    return;
+  }
+
+  let modal = document.getElementById("branchReportsModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "branchReportsModal";
+    modal.className = "modal";
+    modal.innerHTML = `
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">Historial de pedidos - ${branchName}</h3>
+            <button type="button" class="btn-close" aria-label="Cerrar">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Productos</th>
+                    <th>Fecha de entrega</th>
+                    <th>Notas</th>
+                    <th>Estatus</th>
+                    <th>Registrado</th>
+                  </tr>
+                </thead>
+                <tbody id="branchReportsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+    const closeBtn = modal.querySelector(".btn-close");
+    closeBtn.addEventListener("click", () => closeModal(modal));
+    modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(modal); });
+  }
+
+  const openAndRender = () => {
+    renderBranchHistory(branchName);
+    openModal(modal);
+  };
+  buttons.forEach((btn) => btn.addEventListener("click", (e) => { e.preventDefault(); openAndRender(); }));
+}
+
+function getOrderHistoryAll() {
+  try {
+    if (window.historyService && typeof window.historyService.getAll === "function") {
+      return window.historyService.getAll() || [];
+    }
+  } catch (_) {}
+  try {
+    const raw = localStorage.getItem("order_history");
+    return raw ? JSON.parse(raw) : [];
+  } catch (_) {
+    return [];
+  }
+}
+
+function renderBranchHistory(branchName) {
+  const tbody = document.getElementById("branchReportsTableBody");
+  if (!tbody) return;
+  const all = getOrderHistoryAll();
+  const filtered = all.filter((it) => {
+    const isSameBranch = normalizeBranchName(it.branch) === normalizeBranchName(branchName);
+    const st = String(it.status || '').toLowerCase();
+    const isAcceptedOrCanceled = st === 'aceptado' || st === 'cancelado';
+    return isSameBranch && isAcceptedOrCanceled;
+  });
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center">Sin registros</td></tr>';
+    return;
+  }
+  const formatProducts = (arr) => {
+    if (!Array.isArray(arr) || !arr.length) return "—";
+    return arr.map((p) => `${p.name || p.product || "Producto"} x${p.quantity || p.qty || 1}`).join(", ");
+  };
+  const formatDate = (iso) => {
+    try { return iso ? new Date(iso).toLocaleString("es-NI") : "—"; } catch { return "—"; }
+  };
+  tbody.innerHTML = filtered.map((it) => `
+    <tr>
+      <td>${it.id || "—"}</td>
+      <td>${formatProducts(it.products)}</td>
+      <td>${it.deliveryDate || "—"}</td>
+      <td>${it.notes || "—"}</td>
+      <td><span class="status-badge ${String(it.status||'').toLowerCase()}">${it.status || "—"}</span></td>
+      <td>${formatDate(it.timestamp)}</td>
+    </tr>
+  `).join("");
 }
