@@ -54,7 +54,7 @@ const CONFIG = {
   redirects: {
     admin: "html/managua.html",
     gerente: "html/dashboard.html",
-    default: "../index.html",
+    default: "index.html",
   },
   timeouts: {
     redirect: 2000,
@@ -451,27 +451,22 @@ async function handleLogin(e) {
       await signOut(auth);
       return;
     }
+    
+    // Redirect based on role or departamento (consulta el campo en Firestore)
+    const rol = userDoc.data().rol || null;
+    const departamento =
+      userDoc.data().departamento || userDoc.data().sucursal || rol || null;
 
-    // Redirect based on role
-    const rol = userDoc.data().rol;
-    if (rol === "admin" || rol === "gerente") {
-      showMessage(
-        msgElement,
-        "Inicio de sesión exitoso. Redirigiendo...",
-        "success"
-      );
-      setTimeout(() => {
-        window.location.href =
-          CONFIG.redirects[rol] || CONFIG.redirects.default;
-      }, 1500);
-    } else {
-      await signOut(auth);
-      showMessage(
-        msgElement,
-        "No tienes permisos para acceder a este sistema.",
-        "error"
-      );
-    }
+    // Determine destination: explicit mapping in CONFIG.redirects, otherwise
+    // use a generic department page and pass the departamento as query param.
+    const destination =
+      (rol && CONFIG.redirects[rol]) ||
+      `html/department.html?name=${encodeURIComponent(departamento || '')}`;
+
+    showMessage(msgElement, 'Inicio de sesión exitoso. Redirigiendo...', 'success');
+    setTimeout(() => {
+      window.location.href = destination;
+    }, 1500);
   } catch (error) {
     console.error("Error en login:", error);
     let errorMessage =

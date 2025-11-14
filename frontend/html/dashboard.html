@@ -1,200 +1,56 @@
 <!DOCTYPE html>
-<html lang="es" class="no-js">
-
+<html lang="es">
 <head>
-  <!-- Meta Tags -->
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <meta name="description" content="Sistema de gestión administrativa para agencias distribuidoras de Coca-Cola">
-  <meta name="keywords" content="Coca-Cola, distribución, gestión, inventario, ventas, facturación, pedidos">
-  <meta name="author" content="Bryan Saenz">
-  <meta name="theme-color" content="#F40009">
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="../img/favicon.ico">
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <!-- Scripts -->
-  <script type="module" src="../js/dashboard.js" defer></script>
-
-  <!-- Custom CSS -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dashboard | SnackCity</title>
   <link rel="stylesheet" href="../css/styles.css">
-  <link rel="stylesheet" href="../css/dashboard.css">
-
-  <title>Dashboard - Gestión de Pedidos | Coca-Cola</title>
+  <script type="module" src="/js/user-session.mjs" defer></script>
 </head>
-
-<body class="dashboard-page">
-  <!-- Sidebar Navigation -->
-  <nav class="sidebar">
-    <div class="sidebar-header">
-      <div class="brand">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/d/dd/Coca-Cola_logo_white.png" alt="Coca-Cola"
-          class="brand-logo">
-        <h2>Panel de Control</h2>
+<body class="app-page">
+  <header class="app-header">
+    <div class="container">
+      <h1 id="userName">Usuario</h1>
+      <div class="user-meta">
+        <span class="user-role" id="userRole">Rol</span>
+        <span class="user-department" id="userDept">Departamento</span>
       </div>
-      <div class="user-info">
-        <div class="user-avatar">
-          <i class="fas fa-user-circle"></i>
-        </div>
-        <div class="user-details">
-          <h3 id="userName">Bienvenido</h3>
-          <p class="user-role" id="userRole">Administrador</p>
-        </div>
-      </div>
+      <button id="logout" class="btn btn-secondary">Cerrar sesión</button>
     </div>
+  </header>
 
-    <ul class="nav-links">
-      <li class="nav-item active">
-        <a href="#" class="nav-link">
-          <i class="fas fa-chart-line"></i>
-          <span>Dashboard</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="managua.html" class="nav-link">
-          <i class="fas fa-warehouse"></i>
-          <span>Managua</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="jinotepe.html" class="nav-link">
-          <i class="fas fa-warehouse"></i>
-          <span>Jinotepe</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="diriamba.html" class="nav-link">
-          <i class="fas fa-warehouse"></i>
-          <span>Diriamba</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="masaya.html" class="nav-link">
-          <i class="fas fa-warehouse"></i>
-          <span>Masaya</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="#" id="inboxLink" class="nav-link">
-          <i class="fas fa-inbox"></i>
-          <span>Bandeja de Entrada</span>
-          <span class="badge" id="unreadCount">0</span>
-        </a>
-      </li>
-    </ul>
+  <main class="container">
+    <h2>Dashboard</h2>
+    <p>Bienvenido al dashboard. Aquí se agregará la interfaz principal según el rol/permiso.</p>
 
-  </nav>
+    <section id="stats" class="card">
+      <h3>Estadísticas</h3>
+      <p>Placeholder para métricas y tablas.</p>
+    </section>
+  </main>
 
-  <!-- Main Content -->
-  <main class="main-content">
-    <!-- Top Navigation -->
-    <header class="top-nav">
-      <div class="nav-left">
-        <button class="toggle-sidebar" id="toggleSidebarBtn" aria-label="Toggle navigation">
-          <i class="fas fa-bars"></i>
-        </button>
-        <h1>Nuevo Pedido</h1>
-      </div>
-      <div class="nav-right">
-        <div class="search-box">
-          <i class="fas fa-search search-icon"></i>
-          <input type="text" placeholder="Buscar..." class="search-input" aria-label="Buscar en el sistema">
-        </div>
-        <div class="user-actions">
-          <button class="notification-btn" aria-label="Notificaciones">
-            <i class="far fa-bell"></i>
-            <span class="notification-badge">3</span>
-          </button>
-          <div class="user-dropdown">
-            <button class="user-menu-btn" aria-expanded="false" aria-haspopup="true">
-              <img src="https://ui-avatars.com/api/?name=Usuario&background=F40009&color=fff" alt="Usuario"
-                class="user-avatar-sm">
-              <span class="user-name">Usuario</span>
-              <i class="fas fa-chevron-down"></i>
-            </button>
-            <div class="dropdown-menu">
-              <a href="#" class="dropdown-item"><i class="fas fa-user"></i> Perfil</a>
-              <a href="#" class="dropdown-item"><i class="fas fa-cog"></i> Configuración</a>
-              <div class="dropdown-divider"></div>
-              <a href="../index.html" class="dropdown-item text-danger"><i class="fas fa-sign-out-alt"></i> Cerrar
-                Sesión</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </header>
+  <script type="module">
+    import { requireAuth } from '/js/user-session.mjs';
+    import { getAuth, signOut } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js';
 
-    <!-- Page Content -->
-    <div class="page-content">
-      <div class="container-fluid">
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">Pedidos Pendientes</h3>
-          </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table products-table">
-                <thead>
-                  <tr>
-                    <th>Código</th>
-                    <th>Sucursal</th>
-                    <th>Productos</th>
-                    <th>Fecha de entrega</th>
-                    <th>Notas</th>
-                    <th>Estatus</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody id="ordersTableBody"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const profile = await requireAuth('/index.html');
+      if (!profile) return;
 
-  <!-- Historial de Pedidos -->
-  <div class="page-content">
-    <div class="container-fluid">
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">Historial de pedidos</h3>
-        </div>
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table products-table">
-              <thead>
-                <tr>
-                  <th>Código</th>
-                  <th>Sucursal</th>
-                  <th>Productos</th>
-                  <th>Fecha de entrega</th>
-                  <th>Notas</th>
-                  <th>Estatus</th>
-                  <th>Registrado</th>
-                </tr>
-              </thead>
-              <tbody id="historyTableBody"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+      // quick populate of header fields (already handled by user-session.mjs but keep fallback)
+      document.getElementById('userName').textContent = profile.nombre || profile.correo || '-';
+      document.getElementById('userRole').textContent = profile.rol || '-';
+      document.getElementById('userDept').textContent = profile.departamento || profile.sucursal || '-';
 
-  <!-- Scripts -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="../js/dashboard.js" type="module"></script>
+      document.getElementById('logout').addEventListener('click', async () => {
+        try {
+          await signOut(getAuth());
+          window.location.href = '/index.html';
+        } catch (err) {
+          console.error('Error signOut', err);
+        }
+      });
+    });
+  </script>
 </body>
-
 </html>

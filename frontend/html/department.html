@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Departamento | SnackCity</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="app-page">
+  <header class="app-header">
+    <div class="container">
+      <h1 id="userName">Usuario</h1>
+      <div class="user-meta">
+        <span class="user-role" id="userRole">Rol</span>
+        <span class="user-department" id="userDept">Departamento</span>
+      </div>
+      <button id="logout" class="btn btn-secondary">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <h2 id="deptTitle">Página del departamento</h2>
+    <p id="deptDesc">Contenido específico por departamento.</p>
+
+    <section id="profileCard" class="card">
+      <h3>Mi perfil</h3>
+      <ul>
+        <li><strong>Nombre:</strong> <span id="pfName">-</span></li>
+        <li><strong>Correo:</strong> <span id="pfEmail">-</span></li>
+        <li><strong>Rol:</strong> <span id="pfRole">-</span></li>
+        <li><strong>Sucursal / Departamento:</strong> <span id="pfDept">-</span></li>
+      </ul>
+    </section>
+  </main>
+
+  <script type="module">
+    // Import the session module once (relative path) and use it here.
+    import { requireAuth } from '../js/user-session.mjs';
+    import { getAuth, signOut } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js';
+
+    function getQueryParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.debug('department: DOMContentLoaded');
+      const profile = await requireAuth('/index.html');
+      console.debug('department: requireAuth returned', profile);
+      if (!profile) return;
+
+      // determine department name: query param takes precedence
+      const nameParam = (getQueryParam('name') || '').trim();
+      const deptName = nameParam || profile.departamento || profile.sucursal || profile.rol || 'General';
+
+      // check that elements exist before writing
+      const deptTitleEl = document.getElementById('deptTitle');
+      const deptDescEl = document.getElementById('deptDesc');
+      const pfNameEl = document.getElementById('pfName');
+      const pfEmailEl = document.getElementById('pfEmail');
+      const pfRoleEl = document.getElementById('pfRole');
+      const pfDeptEl = document.getElementById('pfDept');
+      console.debug('department: elements', { deptTitleEl, pfNameEl, pfEmailEl, pfRoleEl, pfDeptEl });
+
+      if (deptTitleEl) deptTitleEl.textContent = `Sección: ${deptName}`;
+      if (deptDescEl) deptDescEl.textContent = `Contenido para ${deptName}.`;
+      if (pfNameEl) pfNameEl.textContent = profile.nombre || profile.correo || '-';
+      if (pfEmailEl) pfEmailEl.textContent = profile.correo || profile.email || '-';
+      if (pfRoleEl) pfRoleEl.textContent = profile.rol || '-';
+      if (pfDeptEl) pfDeptEl.textContent = profile.departamento || profile.sucursal || '-';
+
+      const logoutBtn = document.getElementById('logout');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+          try {
+            await signOut(getAuth());
+            window.location.href = '/index.html';
+          } catch (err) {
+            console.error('Error signOut', err);
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

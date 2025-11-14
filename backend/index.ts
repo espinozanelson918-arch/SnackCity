@@ -7,6 +7,8 @@ import comprasRoutes from "./routes/comprasRoutes";
 import ventaRoutes from "./routes/ventasRoutes";
 import logsRoutes from "./routes/logsRoutes";
 import reporteRoutes from "./routes/reportesRoutes";
+import inventarioRoutes from "./routes/inventarioRoutes";
+import turnoRoutes from "./routes/turnoRoutes";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -22,6 +24,8 @@ app.use("/api/compras", comprasRoutes);
 app.use("/api/ventas", ventaRoutes);
 app.use("/api/logs", logsRoutes);
 app.use("/api/reportes", reporteRoutes);
+app.use("/api/inventario", inventarioRoutes);
+app.use("/api/turnos", turnoRoutes);
 
 // Servir frontend
 app.use(express.static(path.join(__dirname, "../frontend")));
